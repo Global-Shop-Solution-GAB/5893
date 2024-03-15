@@ -1,0 +1,455 @@
+Program.Sub.ScreenSU.Start
+Gui.frmQuoteCreate..Create
+Gui.frmQuoteCreate..Caption("Quote Creation")
+Gui.frmQuoteCreate..Size(7095,5520)
+Gui.frmQuoteCreate..MinX(0)
+Gui.frmQuoteCreate..MinY(0)
+Gui.frmQuoteCreate..Position(0,0)
+Gui.frmQuoteCreate..BackColor(-2147483633)
+Gui.frmQuoteCreate..MousePointer(0)
+Gui.frmQuoteCreate..Event(UnLoad,frmQuoteCreate_UnLoad)
+Gui.frmQuoteCreate.lbl1.Create(Label,"Step 2: Select CSV",True,6495,255,0,120,3870,True,0,"Arial",8,-2147483633,0)
+Gui.frmQuoteCreate.lbl1.FontStyle(True,False,False,False,False)
+Gui.frmQuoteCreate.lbl2.Create(Label,"Step 1: Select Customer",True,4470,255,0,165,240,True,0,"Arial",8,-2147483633,0)
+Gui.frmQuoteCreate.lbl2.FontStyle(True,False,False,False,False)
+Gui.frmQuoteCreate.txtCustomer.Create(TextBox,"",True,1365,300,0,165,540,True,0,"Arial",8,-2147483643,1)
+Gui.frmQuoteCreate.cmdBrowse.Create(Button)
+Gui.frmQuoteCreate.cmdBrowse.Size(855,375)
+Gui.frmQuoteCreate.cmdBrowse.Position(1650,510)
+Gui.frmQuoteCreate.cmdBrowse.Caption("^")
+Gui.frmQuoteCreate.cmdBrowse.Event(Click,cmdBrowse_Click)
+Gui.frmQuoteCreate.ddlEstimate.Create(DropDownList)
+Gui.frmQuoteCreate.ddlEstimate.Size(3000,330)
+Gui.frmQuoteCreate.ddlEstimate.Position(120,1965)
+Gui.frmQuoteCreate.ddlExpiration.Create(DropDownList)
+Gui.frmQuoteCreate.ddlExpiration.Size(2970,330)
+Gui.frmQuoteCreate.ddlExpiration.Position(135,2640)
+Gui.frmQuoteCreate.ddlPayment.Create(DropDownList)
+Gui.frmQuoteCreate.ddlPayment.Size(2985,330)
+Gui.frmQuoteCreate.ddlPayment.Position(135,1260)
+Gui.frmQuoteCreate.lblPayment.Create(Label,"Payment Terms",True,1935,255,0,165,990,True,0,"Arial",8,-2147483633,0)
+Gui.frmQuoteCreate.lblExpiration.Create(Label,"Expiration/Validity",True,2955,255,0,165,2415,True,0,"Arial",8,-2147483633,0)
+Gui.frmQuoteCreate.lblEstimate.Create(Label,"Estimate Lead Time",True,2940,255,0,165,1740,True,0,"Arial",8,-2147483633,0)
+Gui.frmQuoteCreate.txtFileName.Create(TextBox,"",True,5925,300,0,120,4140,True,0,"Arial",8,-2147483643,1)
+Gui.frmQuoteCreate.cmdBrowseFile.Create(Button)
+Gui.frmQuoteCreate.cmdBrowseFile.Size(480,375)
+Gui.frmQuoteCreate.cmdBrowseFile.Position(6195,4110)
+Gui.frmQuoteCreate.cmdBrowseFile.Caption("^")
+Gui.frmQuoteCreate.cmdBrowseFile.Event(Click,cmdBrowseFile_Click)
+Gui.frmQuoteCreate.cmdUpload.Create(Button)
+Gui.frmQuoteCreate.cmdUpload.Size(2475,375)
+Gui.frmQuoteCreate.cmdUpload.Position(120,4500)
+Gui.frmQuoteCreate.cmdUpload.Caption("Upload Quote/Sales Order")
+Gui.frmQuoteCreate.cmdUpload.Event(Click,cmdUpload_Click)
+Gui.frmQuoteCreate.optBOM.Create(Option)
+Gui.frmQuoteCreate.optBOM.Size(1125,255)
+Gui.frmQuoteCreate.optBOM.Position(150,3165)
+Gui.frmQuoteCreate.optBOM.Caption("BOM")
+Gui.frmQuoteCreate.optSale.Create(Option)
+Gui.frmQuoteCreate.optSale.Size(1575,255)
+Gui.frmQuoteCreate.optSale.Position(150,3525)
+Gui.frmQuoteCreate.optSale.Caption("Sales Order")
+Gui.frmQuoteCreate.txtBOMParent.Create(TextBox,"",True,2010,300,0,1650,3150,True,0,"Arial",8,-2147483643,1)
+Gui.frmQuoteCreate.txtBOMParent.MaxLength(20)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.sBuildData.Declare(string)
+v.global.sfileupload.Declare(string)
+Program.External.Include.Library("6004.lib")
+Program.Sub.Preflight.End
+
+Program.Sub.frmQuoteCreate_UnLoad.Start
+f.ODBC.Connection!con.Close
+f.Intrinsic.Control.End
+Program.Sub.frmQuoteCreate_UnLoad.End
+
+Program.Sub.Main.Start
+Gui.frmQuoteCreate.trvDrag.Event("DRAGDROPFILE",Dragdrop)
+f.ODBC.Connection!con.opencompanyconnection(60)
+f.Intrinsic.Control.CallSub(loadPayments)
+f.Intrinsic.Control.CallSub(loadExpiration)
+f.Intrinsic.Control.CallSub(loadValidity)
+f.Intrinsic.UI.SetBrowserHotTypeAhead(true)
+gui.frmQuoteCreate.optBOM.Value(true)
+f.Data.Dictionary.Create("dict")
+gui.frmQuoteCreate..Show
+Program.Sub.Main.End
+
+Program.Sub.loadPayments.Start
+f.Data.DataTable.CreateFromSQL("dtP","con","SELECT TERMS_CODE, TERMS_MESSAGE from V_AR_TERMS_DESCR")
+v.Local.i.Declare(long)
+f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtP.RowCount--,1)
+	gui.frmQuoteCreate.ddlPayment.AddItem(v.DataTable.dtP(v.Local.i).TERMS_MESSAGE!FIELDVAL,v.DataTable.dtP(v.Local.i).TERMS_CODE!FIELDVAL)
+f.Intrinsic.Control.Next(v.Local.i)
+Program.Sub.loadPayments.End
+
+Program.Sub.loadExpiration.Start
+gui.frmQuoteCreate.ddlEstimate.AddItem("",0)
+gui.frmQuoteCreate.ddlEstimate.AddItem("1 Week",0)
+gui.frmQuoteCreate.ddlEstimate.AddItem("2 Weeks",1)
+gui.frmQuoteCreate.ddlEstimate.AddItem("3 Weeks",2)
+gui.frmQuoteCreate.ddlEstimate.AddItem("4 Weeks",3)
+gui.frmQuoteCreate.ddlEstimate.AddItem("5 Weeks",4)
+gui.frmQuoteCreate.ddlEstimate.AddItem("6 Weeks",5)
+gui.frmQuoteCreate.ddlEstimate.AddItem("7 Weeks",6)
+gui.frmQuoteCreate.ddlEstimate.AddItem("8 Weeks",7)
+gui.frmQuoteCreate.ddlEstimate.AddItem("9 Weeks",8)
+gui.frmQuoteCreate.ddlEstimate.AddItem("10 Weeks",9)
+gui.frmQuoteCreate.ddlEstimate.AddItem("11 Weeks",10)
+gui.frmQuoteCreate.ddlEstimate.AddItem("12 Weeks",11)
+gui.frmQuoteCreate.ddlEstimate.AddItem("By Arrangement",12)
+gui.frmQuoteCreate.ddlEstimate.AddItem("Delivery as Described Above",13)
+Program.Sub.loadExpiration.End
+
+Program.Sub.loadValidity.Start
+gui.frmQuoteCreate.ddlExpiration.AddItem("",0)
+gui.frmQuoteCreate.ddlExpiration.AddItem("7 days",0)
+gui.frmQuoteCreate.ddlExpiration.AddItem("30 days",1)
+gui.frmQuoteCreate.ddlExpiration.AddItem("60 days",2)
+gui.frmQuoteCreate.ddlExpiration.AddItem("120 days",3)
+Program.Sub.loadValidity.End
+
+Program.Sub.cmdBrowse_Click.Start
+V.Local.sRet.Declare(String)
+V.Local.sTitles.Declare(String)
+V.Local.iWidths.Declare(String)
+V.Local.ssql.Declare(String)
+
+F.intrinsic.string.split("Customer*!*Name Customer","*!*",V.local.sTitles)
+F.intrinsic.string.split("2000*!*3000","*!*",V.local.iWidths)
+
+V.Local.ssql.set("select Customer, NAME_CUSTOMER from V_CUSTOMER_MASTER")
+
+F.intrinsic.ui.browser("Select a Customer",con,v.Local.ssql,V.local.sTitles,V.local.iWidths,V.local.sRet)
+
+F.intrinsic.control.if(V.local.sRet,"=","***CANCEL***")
+F.intrinsic.control.else
+	F.intrinsic.string.split(V.local.sRet,"*!*",V.local.sRet)
+	gui.frmQuoteCreate.txtCustomer.Text(v.Local.sRet(0))
+F.Intrinsic.Control.endif
+Program.Sub.cmdBrowse_Click.End
+
+Program.Sub.PostUpdate.Start
+v.Local.ssql.Declare(string)
+v.Local.sValid.Declare(string)
+v.Local.sEstimate.Declare(string)
+v.Local.sPayment.Declare(string)
+v.Local.sPayment.set(v.Screen.frmQuoteCreate!ddlPayment.value)
+v.Local.sEstimate.Set(v.Screen.frmQuoteCreate!ddlEstimate.Value)
+v.Local.sValid.Set(v.Screen.frmQuoteCreate!ddlExpiration.value)
+f.Intrinsic.String.Build("UPDATE QUOTE_HEADER SET TERMS='{0}', MARK_INFO='{1}', EXPIRATION='{2}' WHERE RECORD_NO='  A '",v.Local.sPayment,v.Local.sEstimate,v.Local.sValid,v.Local.ssql)
+f.ODBC.Connection!con.execute(v.Local.ssql)
+Program.Sub.PostUpdate.End
+
+Program.Sub.cmdUpload_Click.Start
+f.Intrinsic.Control.Try
+	'Set Default Variables
+	v.Local.sDescription.Declare
+	v.Local.sPromiseDate.Declare
+	V.Local.sEstimate.Declare
+	V.Local.sGSSPart.Declare
+	v.Local.sFilename.Declare
+	v.Local.sFiledir.Declare
+	v.Local.sRet.Declare
+	v.Local.sQuote.Declare
+	v.Local.sCustomer.Declare
+	v.Local.sFile.Declare
+	v.Local.sParams.Declare
+	v.Local.sTemp.Declare
+	v.Local.sSql.Declare
+	v.Local.sType.Declare
+	v.Local.sPL.Declare
+	v.Local.sSeq.Declare
+	v.Local.sParent.Declare
+	v.Local.sUser1.Declare
+	v.Local.sUser2.Declare
+	v.Local.sUser3.Declare
+	v.Local.sUser4UnitNo.Declare
+	v.Local.sUser5Level.Declare
+	v.Local.sUnitType.Declare
+	
+	v.Local.i.Declare(Long,0)
+	v.Local.j.Declare(long)
+	v.Local.x.Declare(long)
+	v.Local.lWeek.Declare
+	v.Local.iRet.Declare
+	v.Local.iCount.Declare
+	v.Local.iTotQty.Declare
+	
+	v.Local.dDueDate.Declare(date,v.Ambient.Now)
+	
+	v.Local.bCheck.Declare
+	v.Local.bBOM.Declare
+	v.Local.bEstimate.Declare
+	v.Local.bFileLock.Declare
+	
+	v.Local.sQuote.Set("")
+	
+	f.Intrinsic.UI.InvokeWaitDialog("Processing...")
+	
+	'Set Customer
+	v.Local.sCustomer.Set(v.Screen.frmQuoteCreate!txtCustomer.text)
+	
+	'Set File
+	v.Local.sFile.Set(v.Screen.frmQuoteCreate!txtFileName.text)
+	
+	'Determine the type
+	f.Intrinsic.Control.If(v.Screen.frmQuoteCreate!optBOM.Value,=,TRUE)
+		v.Local.sType.Set("BOM")
+		v.Local.sFilename.Set("BOMHDR.txt")
+		v.Local.sParent.Set(v.Screen.frmQuoteCreate!txtBOMParent.text)
+		f.Intrinsic.Control.If(v.Local.sParent.Trim,=,"")
+			f.Intrinsic.UI.Msgbox("BOM Name must be filled in before uploading file.")
+			F.Intrinsic.UI.CloseWaitDialog
+			f.Intrinsic.Control.ExitSub
+		f.Intrinsic.Control.EndIf
+		
+		'Determine if file is locked
+		F.Intrinsic.String.Concat(V.Caller.FilesDir,"\",V.Local.sFilename,V.local.sFiledir)
+		F.Intrinsic.File.IsFileLocked(v.Local.sfiledir,v.Local.bFileLock)
+		f.Intrinsic.Control.If(v.Local.bFileLock)
+			f.Intrinsic.UI.Msgbox("BOM Upload File locked, please try again momentairly.")
+			F.Intrinsic.UI.CloseWaitDialog
+			f.Intrinsic.Control.ExitSub
+		f.Intrinsic.Control.EndIf
+
+		'Open File for writing
+		f.Intrinsic.File.GetHandle(v.local.iRet)
+		f.Intrinsic.File.OpenForWrite(V.local.sfiledir,v.local.iRet)
+			
+	f.Intrinsic.Control.Else
+		v.Local.sType.Set("SALES")
+	f.Intrinsic.Control.EndIf
+	
+	'Read file & loop
+	f.Data.DataTable.CreateFromCSV("dt",v.Local.sfile,"Level*!*UnitType*!*Scheme*!*Tower*!*UnitNo","String*!*String*!*String*!*String*!*String",true)	
+	f.Data.DataTable.AddColumn("dt","Qty","Integer",1)
+	f.Data.DataView.Create("dt","dv")
+	
+	f.Intrinsic.Control.SelectCase(v.Local.sType)
+		f.Intrinsic.Control.case("SALES")
+			'Add Datatable row
+			f.Data.DataTable.AddRow("6004Header","Type","O","CustNum",v.Local.sCustomer)
+			
+			'Set Promise Date
+			v.Local.sEstimate.Set(v.Screen.frmQuoteCreate!ddlEstimate.value)
+			f.Intrinsic.String.Split(v.Local.sEstimate," ",v.Local.sEstimate)
+			f.Intrinsic.Math.IsNumeric(v.Local.sEstimate(0),v.Local.bEstimate)
+			f.Intrinsic.Control.If(v.Local.bEstimate)
+				v.Local.lWeek.Set(v.Local.sEstimate(0))
+				f.Intrinsic.Math.Mult(v.Local.lWeek,7,v.Local.lWeek)
+				f.Intrinsic.Date.DateAdd("D",v.Local.lWeek,v.Ambient.Date,v.Local.dDueDate)
+				f.Intrinsic.String.Format(v.Local.dDueDate,"YYYYMMDD",v.Local.sPromiseDate)
+			f.Intrinsic.Control.Else
+				f.Intrinsic.String.Format(v.Ambient.Date,"YYYYMMDD",v.Local.sPromiseDate)
+			f.Intrinsic.Control.EndIf
+	
+			'Variable set & format
+			f.Intrinsic.Control.For(v.Local.i,1,v.DataTable.dt.RowCount--,1)
+				F.Intrinsic.Control.If(v.DataTable.dt(v.Local.i).Level!fieldvaltrim,<>,"")
+					v.Local.sDescription.Set(v.DataTable.dt(v.Local.i).UnitType!fieldvaltrim)
+					v.Local.sGSSPart.Set(v.DataTable.dt(v.Local.i).UnitType!fieldvaltrim)
+					f.Intrinsic.String.Replace(v.Local.sGSSPart.UCase,"TYPE","",v.Local.sGSSPart)
+					f.Intrinsic.String.LTrim(v.Local.sGSSPart,v.Local.sGSSPart)
+					v.Local.sUser4UnitNo.Set(v.DataTable.dt(v.Local.i).UnitNo!fieldvaltrim)
+					v.Local.sUser5Level.Set(v.DataTable.dt(v.Local.i).Level!fieldvaltrim)
+					f.Intrinsic.String.Build("SELECT PRODUCT_LINE FROM V_INVENTORY_ALL WHERE PART='{0}'",V.Local.sGSSPart,v.Local.ssql)
+					f.ODBC.Connection!con.executeandreturn(v.Local.ssql,v.Local.sPL)
+					f.Intrinsic.Control.If(v.Local.sPL.Trim,=,"")
+						v.Local.sPL.Set("FG")
+					f.Intrinsic.Control.EndIf
+					f.Data.DataTable.AddRow("6004Lines","QtyOrdered","000000010000","UM","EA","PartDescription",v.Local.sDescription,"PL",v.Local.sPL,"Part",v.Local.sGSSPart,"User4",v.Local.sUser4UnitNo,"User5",v.Local.sUser5Level)			
+				f.Intrinsic.Control.EndIf
+			f.Intrinsic.Control.Next(v.Local.i)
+			
+			'Check if customer exist
+			v.Local.ssql.Set("SELECT CUSTOMER FROM V_CUSTOMER_MASTER WHERE CUSTOMER='{0}'")
+			F.Intrinsic.String.Build(v.Local.ssql,v.Local.scustomer.Trim,v.Local.ssql)
+			f.ODBC.Connection!con.executeandreturn(v.Local.ssql,v.Local.sret)
+			f.Intrinsic.Control.If(v.Local.sret.Trim,=,"")
+				f.Intrinsic.UI.Msgbox("Customer not found, please try again.")
+				F.Intrinsic.UI.CloseWaitDialog
+				f.Intrinsic.Control.ExitSub
+			f.Intrinsic.Control.EndIf
+			
+			'Upload Quote/Sales order
+			f.Intrinsic.Control.CallSub(6004Sync)
+			
+			F.Intrinsic.String.Concat(V.Caller.FilesDir,"\","ORDQTE.txt",v.Local.stemp)
+			f.Intrinsic.File.File2String(v.Local.stemp,v.Local.squote)
+			f.Intrinsic.Math.IsNumeric(v.Local.sQuote,v.Local.bCheck)
+			
+			f.Intrinsic.Control.If(v.Local.bCheck,=,false)
+				f.Intrinsic.UI.Msgbox("No quote created, see error log.  Program will now exit.")
+				f.Intrinsic.UI.CloseWaitDialog
+				F.ODBC.Connection!con.Close
+				f.Intrinsic.Control.End
+			f.Intrinsic.Control.EndIf
+			
+			f.Intrinsic.UI.CloseWaitDialog
+			
+			'Open the Sales Order
+			f.Intrinsic.Control.If(v.Local.bSales,=,true)
+				F.Intrinsic.String.Concat(V.Local.sQuote,"!*!O!*!",v.Local.scustomer,v.Local.sparams)
+				f.Global.General.CallWrapperAsync(200000,v.local.sparams)
+			f.Intrinsic.Control.EndIf
+		f.Intrinsic.Control.Case("BOM")
+			'BOM Upload Top level
+			f.Intrinsic.Control.CallSub(uploadBOM,"Part","","Rev","","Qty",1,"UM","EA","Desc",v.Local.sParent,"Vendor","","Category","Phantom","Source","F","Parent",v.Local.sParent.UCase,"Seq","0000")
+		
+			'Bill of Material summarisation
+			f.Data.DataView.ToDataTableDistinct("dt","dv","dtUnitTypes","UnitType")
+			f.Intrinsic.Control.For(v.Local.j,1,v.DataTable.dtUnitTypes.RowCount--,1)
+				F.Intrinsic.Control.If(V.DataTable.dtUnitTypes(v.Local.j).UnitType!fieldvaltrim,<>,"")
+					f.Intrinsic.Math.Add(v.Local.iCount,1,v.Local.iCount)
+					f.Intrinsic.String.LPad(v.local.iCount,"0",3,v.Local.sSeq)
+					f.Intrinsic.String.Concat(v.Local.sSeq,"0",v.Local.sSeq)
+					v.Local.sGSSPart.Set(v.DataTable.dtUnitTypes(v.Local.j).UnitType!fieldvaltrim)
+					f.Intrinsic.String.Replace(v.Local.sGSSPart.UCase,"TYPE","",v.Local.sGSSPart)
+					f.Intrinsic.String.LTrim(v.Local.sGSSPart,v.Local.sGSSPart)
+					f.Intrinsic.String.Build("UnitType='{0}'",v.DataTable.dtUnitTypes(v.Local.j).UnitType!fieldvaltrim,v.Local.sTemp)
+					f.Data.DataTable.Compute("dt","SUM(Qty)",v.Local.sTemp,v.Local.iTotQty)
+					f.Intrinsic.String.Replace(v.DataTable.dtUnitTypes(v.Local.j).UnitType!fieldvaltrim,"Unit Type","",v.Local.sUnitType)
+					f.Intrinsic.Control.CallSub(uploadBOM,"Part",v.Local.sGSSPart,"Rev","","Qty",v.Local.iTotQty,"UM","EA","Desc",v.Local.sDescription,"Vendor","","Category","Normal","Source","F","Parent",V.Local.sParent.UCase,"Seq",v.Local.sSeq)
+				F.Intrinsic.Control.EndIf
+			f.Intrinsic.Control.Next(v.Local.j)
+			
+			'Bring string into File
+			f.Intrinsic.File.WriteLine(v.Local.iRet,v.global.sfileupload)
+			f.Intrinsic.File.CloseFile(v.Local.iRet)	
+			
+			'Delete from table
+			f.Intrinsic.String.Build("Delete from BOM_Eng where part IN ('{0}')",v.Local.sParent,V.Local.sSql)
+			f.ODBC.Connection!con.Execute(V.Local.sSql)
+			f.Intrinsic.String.Build("Delete from bom_mstr where parent IN ('{0}')",v.Local.sParent,V.Local.sSql)
+			F.ODBC.Connection!con.Execute(V.Local.sSql)
+				
+			'Upload BOM
+			F.Global.General.CallWrapperSync(6010,"NS!*!50")
+			F.Intrinsic.String.ConcatCallWrapperArgs(V.Local.sParent.UCase,"",V.Local.sParams)
+			F.Global.General.CallWrapperSync(1001,v.Local.sParams)
+		
+	f.Intrinsic.Control.EndSelect
+		
+	f.ODBC.Connection!con.Close
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.ODBC.Connection!con.Close
+	f.Intrinsic.File.CloseFile(v.Local.iRet)
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdUpload_Click.End
+
+Program.Sub.cmdBrowseFile_Click.Start
+f.Intrinsic.Control.Try
+	v.Local.sret.Declare
+	Function.Intrinsic.UI.ShowOpenFileDialog("","CSV File|*.csv","My Documents",v.Local.sret)
+	F.Intrinsic.Control.If(v.Local.sret,<>,"***CANCEL***")
+		gui.frmQuoteCreate.txtFileName.Text(v.Local.sret)
+	F.Intrinsic.Control.EndIf
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.ODBC.Connection!con.Close
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdBrowseFile_Click.End
+
+Program.Sub.uploadBOM.Start
+v.Local.sError.Declare(String)
+V.Local.sLine.Declare(String)
+V.Local.sParent.Declare(String)
+V.Local.sPart.Declare(String)
+V.Local.sSeq.Declare(String)
+V.Local.sDescription.Declare(String)
+V.Local.sCount.Declare(String)
+V.Local.sUM.Declare(String)
+V.Local.sCategory.Declare(String)
+V.Local.sSource.Declare(String)
+V.Local.sMisc.Declare(String)
+V.Local.iFor.Declare(Long)
+V.Local.i7.Declare(Long)
+V.Local.sRev.Declare(String)
+V.Local.schild.Declare(String)
+V.Local.sqty.Declare(String)
+V.Local.spno.Declare(String)
+V.Local.suom.Declare(String)
+V.Local.sDesc.Declare(String)
+V.Local.spad.Declare(String)
+V.Local.spad1.Declare(String)
+V.Local.spad2.Declare(String)
+V.Local.spad3.Declare(String)
+V.Local.sRMLine.Declare(String)
+V.Local.sRMParent.Declare(String)
+v.Local.ssql.Declare(String)
+V.Local.sVendcode.Declare(String)
+v.Local.sPL.Declare(string)
+V.Local.sTempCategory.Declare(String)
+
+F.Intrinsic.String.RPad(v.Args.Part," ",20,V.Local.sPart)
+F.Intrinsic.String.Left(V.Local.sPart,20,V.Local.sPart)
+
+'F.Intrinsic.String.RPad(v.Args.Rev," ",3,V.Local.sRev)
+'F.Intrinsic.String.Left(V.Local.sRev,3,V.Local.sRev)
+
+'Parent
+F.Intrinsic.String.RPad(V.Args.Parent," ",20,V.Local.sParent)
+F.Intrinsic.String.Concat(v.global.sfileupload,v.Local.sParent,v.global.sfileupload)
+
+'Sequences
+f.Intrinsic.String.LPad(v.args.Seq,"0",4,v.Local.sLine)
+F.Intrinsic.String.Concat(v.global.sfileupload,v.Local.sLine,v.global.sfileupload)
+
+'Quantity
+Function.Intrinsic.String.Format(v.Args.QTY,"####.0000", variable.local.sqty)
+F.Intrinsic.String.LPad(variable.local.sqty,"0",16,V.Local.sqty)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sqty,v.global.sfileupload)
+
+'Part & Rev put together
+F.Intrinsic.String.GSSPartString(V.Local.sPart,V.Local.sRev,V.Local.sPart)
+f.Intrinsic.String.RPad(v.Local.sPart," ",20,v.Local.sPart)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sPart,v.global.sfileupload)
+
+'UM
+F.Intrinsic.String.RPad(v.Args.UM," ",2,V.Local.sUM)
+F.Intrinsic.String.Left(V.Local.sUM,2,V.Local.sUM)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sUM,v.global.sfileupload)
+
+'Descriptions
+F.Intrinsic.String.RPad(V.Args.DESC," ",30,V.Local.sdesc)
+'F.Intrinsic.String.RPad(" "," ",30,V.Local.sdesc)
+F.Intrinsic.String.Left(V.Local.sdesc,30,V.Local.sdesc)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sdesc,v.global.sfileupload)
+
+'Free Pad
+F.Intrinsic.String.RPad(V.Local.spad1," ",113,V.Local.spad1)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad1,v.global.sfileupload)
+
+''Vendor Code
+'F.Intrinsic.String.RPad(v.Args.Vendor," ",6,V.Local.sVendcode)
+'F.Intrinsic.String.Left(V.Local.sVendcode,6,V.Local.sVendcode)
+'F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.svendcode,v.global.sfileupload)
+
+'Free Pad
+'F.Intrinsic.String.RPad(V.Local.spad2," ",48,V.Local.spad2)
+'F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad2,v.global.sfileupload)
+
+'Category
+F.Intrinsic.Control.If(V.Args.Category.Trim,=,"Phantom")
+	F.Intrinsic.String.Concat(v.global.sfileupload,"P",v.global.sfileupload)
+f.Intrinsic.Control.Else
+	F.Intrinsic.String.Concat(v.global.sfileupload," ",v.global.sfileupload)
+F.Intrinsic.Control.EndIf
+
+'Source
+F.Intrinsic.String.Concat(v.global.sfileupload,V.args.Source,v.global.sfileupload)
+
+'Free Pad
+F.Intrinsic.String.RPad(V.Local.spad3," ",90,V.Local.spad3)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad3,v.global.sfileupload)
+
+f.Intrinsic.String.Concat(v.Global.sfileupload,v.Ambient.NewLine,v.Global.sfileupload)
+
+
+Program.Sub.uploadBOM.End
