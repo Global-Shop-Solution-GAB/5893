@@ -1,0 +1,274 @@
+Program.Sub.ScreenSU.Start
+Gui.frmUnitType..Create
+Gui.frmUnitType..Caption("Unit Type Creator")
+Gui.frmUnitType..Size(13725,9810)
+Gui.frmUnitType..MinX(0)
+Gui.frmUnitType..MinY(0)
+Gui.frmUnitType..Position(0,0)
+Gui.frmUnitType..BackColor(-2147483633)
+Gui.frmUnitType..MousePointer(0)
+Gui.frmUnitType..Event(UnLoad,frmUnitType_UnLoad)
+Gui.frmUnitType.txtText.Create(TextboxM)
+Gui.frmUnitType.txtText.Size(5190,9105)
+Gui.frmUnitType.txtText.Position(45,45)
+Gui.frmUnitType.cmdProcess.Create(Button)
+Gui.frmUnitType.cmdProcess.Size(1110,375)
+Gui.frmUnitType.cmdProcess.Position(5250,45)
+Gui.frmUnitType.cmdProcess.Caption("Process")
+Gui.frmUnitType.cmdProcess.Event(Click,cmdProcess_Click)
+Gui.frmUnitType.trv1.Create(TreeView)
+Gui.frmUnitType.trv1.Size(5655,9105)
+Gui.frmUnitType.trv1.Position(6420,45)
+Gui.frmUnitType.cmdUpload.Create(Button)
+Gui.frmUnitType.cmdUpload.Size(1365,375)
+Gui.frmUnitType.cmdUpload.Position(12090,45)
+Gui.frmUnitType.cmdUpload.Caption("Upload BOMs")
+Gui.frmUnitType.cmdUpload.Event(Click,cmdUpload_Click)
+Gui.frmUnitType.cmdUpload.Visible(False)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+v.Global.sfileupload.Declare
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+f.ODBC.Connection!con.opencompanyconnection(60)
+f.Data.DataTable.create("dt",true)
+f.Data.DataTable.AddColumn("dt","Parent","string")
+f.Data.DataTable.AddColumn("dt","Part","string")
+f.Data.DataTable.AddColumn("dt","Description","string")
+f.Data.DataTable.AddColumn("dt","UM","string")
+f.Data.DataTable.AddColumn("dt","QTY","string")
+f.Data.DataTable.AddColumn("dt","Source","string")
+f.Data.DataTable.AddColumn("dt","Cost","string")
+f.Data.DataTable.AddColumn("dt","Seq","string")
+GUI.frmUnitType..Show
+Program.Sub.Main.End
+
+Program.Sub.cmdUpload_Click.Start
+f.Intrinsic.Control.Try
+	V.Local.sFileDir.Declare
+	v.Local.sSql.Declare
+	v.Local.sGSSPart.Declare
+	V.Local.sParams.Declare
+	v.Local.lRet.Declare
+	v.Local.i.Declare
+	
+	f.Intrinsic.UI.InvokeWaitDialog("Upload BOMs")
+	
+	'Get Parents to distinct table then delete
+	F.Data.DataView.Create("dt","dv")
+	f.Data.DataView.ToDataTableDistinct("dt","dv","dtParents","PARENT")
+	F.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtParents.RowCount--,1)
+		f.Intrinsic.String.Build("Delete from BOM_Eng where part IN ('{0}')",v.DataTable.dtParents(v.Local.i).PARENT!FIELDVALTRIM,V.Local.ssql)
+		f.ODBC.Connection!con.Execute(V.Local.ssql)
+		f.Intrinsic.String.Build("Delete from bom_mstr where parent IN ('{0}')",v.DataTable.dtParents(v.Local.i).PARENT!FIELDVALTRIM,V.Local.ssql)
+		F.ODBC.Connection!con.execute(V.Local.ssql)
+	F.Intrinsic.Control.Next(v.Local.i)
+	
+	'Format BOM file
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dt.RowCount--,1)
+		f.Intrinsic.Control.CallSub(uploadBOM,"Part",v.DataTable.dt(v.Local.i).Part!fieldvaltrim,"Rev","","Qty",v.DataTable.dt(v.Local.i).Qty!fieldvaltrim,"UM",v.DataTable.dt(v.Local.i).UM!fieldvaltrim,"Desc",v.DataTable.dt(v.Local.i).Description!fieldvaltrim,"Vendor","","Category","","Source",v.DataTable.dt(v.Local.i).Source!fieldvaltrim,"Parent",v.DataTable.dt(v.Local.i).Parent!fieldvaltrim,"iCount",v.Local.i,"Seq",v.DataTable.dt(v.Local.i).Seq!fieldvaltrim)
+	f.Intrinsic.Control.Next(v.Local.i)
+	
+	'Bring string into File
+	F.Intrinsic.String.Concat(V.Caller.FilesDir,"\BOMHDR.TXT",V.local.sfiledir)
+	
+	'Blank file
+	f.Intrinsic.File.String2File(v.Local.sFileDir,"")
+	
+	'Write to File
+	f.Intrinsic.File.GetHandle(v.local.lRet)
+	f.Intrinsic.File.OpenForWrite(V.local.sfiledir,v.local.lRet)
+	f.Intrinsic.File.WriteLine(v.Local.lRet,v.global.sfileupload)
+	f.Intrinsic.File.CloseFile(v.Local.lRet)
+	
+	'Upload BOM
+	F.Global.General.CallWrapperSync(6010,"NS!*!50")
+	
+	'Create Part & Fix BMATL
+	F.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtParents.RowCount--,1)
+		f.Global.Inventory.AddPartToBatch(v.DataTable.dtparents(v.Local.i).PARENT!FIELDVALTRIM,"EA",v.DataTable.dtparents(v.Local.i).PARENT!FIELDVALTRIM,"","FG","F","","",0,"NOMAINT ")
+		f.Intrinsic.String.ConcatCallWrapperArgs(V.DataTable.dtParents(v.Local.i).PARENT!FIELDVALTRIM,V.DataTable.dtParents(v.Local.i).PARENT!FIELDVALTRIM,v.Local.sParams)
+		F.Global.General.CallWrapperSync(1001,v.Local.sParams)
+	F.Intrinsic.Control.Next(v.Local.i)
+	
+	f.Global.Inventory.PostPartBatch
+	
+	f.Intrinsic.ui.CloseWaitDialog
+	f.Intrinsic.Control.CallSub(frmUnitType_UnLoad)
+	
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmUnitType_UnLoad)
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdUpload_Click.End
+
+Program.Sub.cmdProcess_Click.Start
+F.Intrinsic.Control.Try
+	v.Local.sText.Declare
+	v.Local.sLines.Declare
+	v.Local.sValues.Declare
+	v.Local.sBOMParent.Declare
+	v.Local.sType.Declare
+	V.Local.sTypeN.Declare
+	v.Local.sPartNum.Declare
+	v.Local.sPartNumN.Declare
+	v.Local.sSeq.Declare
+	v.Local.i.Declare
+	v.Local.iFocus.Declare
+	v.Local.icount.Declare
+	v.Local.sText.Set(v.Screen.frmUnitType!txtText.text)
+	gui.frmUnitType.trv1.Visible(False)
+	gui.frmUnitType.cmdProcess.Enabled(false)
+	f.Intrinsic.String.Split(v.Local.sText,v.Ambient.NewLine,v.Local.sLines)
+	f.Intrinsic.Control.For(v.Local.i,0,v.Local.sLines.UBound,1)
+		f.Intrinsic.String.Split(v.Local.sLines(v.Local.i),v.Ambient.Tab,v.Local.sValues)
+		f.Intrinsic.Control.If(v.Local.sValues(0).trim,<>,"")
+			'Special, add 1 to the focus
+			f.Intrinsic.Math.Add(v.Local.iFocus,1,v.Local.iFocus)
+			
+			'Clean up the characters, take out the word type, reset sequence to 0
+			v.Local.sBOMParent.Set(v.Local.sValues)
+			f.Intrinsic.String.Replace(v.Local.sBOMParent,"Type","",v.Local.sBOMParent)
+			f.Intrinsic.String.LTrim(v.Local.sBOMParent,v.Local.sBOMParent)
+			f.Intrinsic.String.UCase(v.Local.sBOMParent,v.Local.sBOMParent)
+			v.Local.icount.Set(0)
+			
+			'Add to datatable and treeview
+			f.Data.DataTable.AddRow("dt","Parent",v.Local.sBOMParent,"Part","","Description",v.Local.sValues,"UM","EA","QTY",1,"Source","F","Cost",0,"Seq","0000")
+		
+			gui.frmUnitType.trv1.AddTreeNode("",v.Local.iFocus,v.Local.sBOMParent,v.Local.sBOMParent,true)
+			
+		f.Intrinsic.Control.ElseIf(v.Local.sValues(1).trim,<>,"")
+			'Add Type
+			v.Local.sType.Set(v.Local.sValues(1))
+			f.Intrinsic.String.Concat(v.Local.sType,v.Local.i,v.Local.sTypeN)
+			gui.frmUnitType.trv1.AddTreeNode(v.Local.sBOMParent,v.Local.iFocus,v.Local.sTypeN,v.Local.sType,true)
+			
+		f.Intrinsic.Control.ElseIf(v.Local.sValues(2).trim,<>,"")
+			'Format Part and set unique number in tree
+			v.Local.sPartNum.Set(v.Local.sValues(2))
+			f.Intrinsic.String.UCase(v.Local.sPartNum,v.Local.sPartNum)
+			f.Intrinsic.Math.Add(v.Local.iCount,1,v.Local.iCount)
+			f.Intrinsic.String.LPad(v.LOCAL.icount,"0",3,v.Local.sseq)
+			f.Intrinsic.String.Concat(v.Local.sseq,"0",v.Local.sseq)
+			f.Intrinsic.String.Concat(v.Local.sPartNum,v.Local.i,v.Local.sPartNumN)
+			f.Intrinsic.String.Concat(v.Local.sType.UCase," ",v.Local.sPartNum,v.Local.spartnum)
+			'Add to datatable and treeview
+			f.Data.DataTable.AddRow("dt","Parent",v.Local.sBOMParent,"Part",v.Local.sPartNum,"Description",v.Local.sPartNum,"UM","EA","QTY",1,"Source","F","Cost",0,"Seq",v.Local.sSeq)
+			gui.frmUnitType.trv1.AddTreeNode(v.Local.sTypeN,v.Local.iFocus,v.Local.sPartNumN,v.Local.sPartNum,true)
+		f.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Next(v.Local.i)
+	gui.frmUnitType.cmdProcess.Enabled(true)
+	gui.frmUnitType.trv1.Visible(true)
+	gui.frmUnitType.cmdUpload.Visible(true)
+F.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmUnitType_UnLoad)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdProcess_Click.End
+
+Program.Sub.uploadBOM.Start
+v.Local.sError.Declare(String)
+V.Local.sLine.Declare(String)
+V.Local.sParent.Declare(String)
+V.Local.sPart.Declare(String)
+V.Local.sSeq.Declare(String)
+V.Local.sDescription.Declare(String)
+V.Local.sCount.Declare(String)
+V.Local.sUM.Declare(String)
+V.Local.sCategory.Declare(String)
+V.Local.sSource.Declare(String)
+V.Local.sMisc.Declare(String)
+V.Local.iFor.Declare(Long)
+V.Local.i7.Declare(Long)
+V.Local.sRev.Declare(String)
+V.Local.schild.Declare(String)
+V.Local.sqty.Declare(String)
+V.Local.spno.Declare(String)
+V.Local.suom.Declare(String)
+V.Local.sDesc.Declare(String)
+V.Local.spad.Declare(String)
+V.Local.spad1.Declare(String)
+V.Local.spad2.Declare(String)
+V.Local.spad3.Declare(String)
+V.Local.sRMLine.Declare(String)
+V.Local.sRMParent.Declare(String)
+v.Local.ssql.Declare(String)
+V.Local.sVendcode.Declare(String)
+v.Local.sPL.Declare(string)
+V.Local.sTempCategory.Declare(String)
+
+F.Intrinsic.String.RPad(v.Args.Part," ",20,V.Local.sPart)
+F.Intrinsic.String.Left(V.Local.sPart,20,V.Local.sPart)
+
+'F.Intrinsic.String.RPad(v.Args.Rev," ",3,V.Local.sRev)
+'F.Intrinsic.String.Left(V.Local.sRev,3,V.Local.sRev)
+
+'Parent
+F.Intrinsic.String.RPad(V.Args.Parent," ",20,V.Local.sParent)
+F.Intrinsic.String.Concat(v.global.sfileupload,v.Local.sParent,v.global.sfileupload)
+
+'Sequences
+f.Intrinsic.String.LPad(v.args.Seq,"0",4,v.Local.sLine)
+F.Intrinsic.String.Concat(v.global.sfileupload,v.Local.sLine,v.global.sfileupload)
+
+'Quantity
+Function.Intrinsic.String.Format(v.Args.QTY,"####.0000", variable.local.sqty)
+F.Intrinsic.String.LPad(variable.local.sqty,"0",16,V.Local.sqty)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sqty,v.global.sfileupload)
+
+'Part & Rev put together
+F.Intrinsic.String.GSSPartString(V.Local.sPart,V.Local.sRev,V.Local.sPart)
+f.Intrinsic.String.RPad(v.Local.sPart," ",20,v.Local.sPart)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sPart,v.global.sfileupload)
+
+'UM
+F.Intrinsic.String.RPad(v.Args.UM," ",2,V.Local.sUM)
+F.Intrinsic.String.Left(V.Local.sUM,2,V.Local.sUM)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sUM,v.global.sfileupload)
+
+'Descriptions
+F.Intrinsic.String.RPad(V.Args.DESC," ",30,V.Local.sdesc)
+'F.Intrinsic.String.RPad(" "," ",30,V.Local.sdesc)
+F.Intrinsic.String.Left(V.Local.sdesc,30,V.Local.sdesc)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sdesc,v.global.sfileupload)
+
+'Free Pad
+F.Intrinsic.String.RPad(V.Local.spad1," ",113,V.Local.spad1)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad1,v.global.sfileupload)
+
+''Vendor Code
+'F.Intrinsic.String.RPad(v.Args.Vendor," ",6,V.Local.sVendcode)
+'F.Intrinsic.String.Left(V.Local.sVendcode,6,V.Local.sVendcode)
+'F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.svendcode,v.global.sfileupload)
+
+'Free Pad
+'F.Intrinsic.String.RPad(V.Local.spad2," ",48,V.Local.spad2)
+'F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad2,v.global.sfileupload)
+
+'Category
+F.Intrinsic.Control.If(V.Args.Category.Trim,=,"Phantom")
+	F.Intrinsic.String.Concat(v.global.sfileupload,"P",v.global.sfileupload)
+f.Intrinsic.Control.Else
+	F.Intrinsic.String.Concat(v.global.sfileupload," ",v.global.sfileupload)
+F.Intrinsic.Control.EndIf
+
+'Source
+F.Intrinsic.String.Concat(v.global.sfileupload,V.args.Source,v.global.sfileupload)
+
+'Free Pad
+F.Intrinsic.String.RPad(V.Local.spad3," ",90,V.Local.spad3)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad3,v.global.sfileupload)
+
+f.Intrinsic.String.Concat(v.Global.sfileupload,v.Ambient.NewLine,v.Global.sfileupload)
+
+Program.Sub.uploadBOM.End
+
+Program.Sub.frmUnitType_UnLoad.Start
+f.odbc.Connection!con.Close
+f.Intrinsic.Control.End
+Program.Sub.frmUnitType_UnLoad.End
+
+
