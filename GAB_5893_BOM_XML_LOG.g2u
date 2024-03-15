@@ -1,0 +1,36 @@
+Program.Sub.ScreenSU.Start
+Gui.frmLog..Create
+Gui.frmLog..Caption("BOM XML Upload Audit Log")
+Gui.frmLog..Size(13110,7080)
+Gui.frmLog..MinX(0)
+Gui.frmLog..MinY(0)
+Gui.frmLog..Position(0,0)
+Gui.frmLog..BackColor(-2147483633)
+Gui.frmLog..MousePointer(0)
+Gui.frmLog..Event(UnLoad,frmLog_UnLoad)
+Gui.frmLog.gsgcLog.Create(GsGridControl)
+Gui.frmLog.gsgcLog.Size(12705,6345)
+Gui.frmLog.gsgcLog.Position(75,75)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+f.Intrinsic.Control.Try
+	f.ODBC.Connection!con.opencompanyconnection(60)
+	f.Data.DataTable.CreateFromSQL("dt","con","SELECT * FROM GAB_5893_LOG")
+	gui.frmLog.gsgcLog.DataSource("dt")
+	GUI.frmLog.gsgcLog.ANCHOR(15)
+	gui.frmLog..Show
+f.Intrinsic.Control.Catch
+	f.Intrinsic.Control.CallSub(frmLog_Unload)
+f.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.frmLog_UnLoad.Start
+f.ODBC.Connection!con.Close
+f.Intrinsic.Control.End
+Program.Sub.frmLog_UnLoad.End
+
+
