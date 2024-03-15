@@ -1,0 +1,1104 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.frmEstimating..Create(DashForm)
+Gui.frmEstimating..Caption("Estimating Tool")
+Gui.frmEstimating..Size(1024,720)
+Gui.frmEstimating..MinX(0)
+Gui.frmEstimating..MinY(0)
+Gui.frmEstimating..Position(0,0)
+Gui.frmEstimating..AlwaysOnTop(False)
+Gui.frmEstimating..FontName("Tahoma")
+Gui.frmEstimating..FontSize(8.25)
+Gui.frmEstimating..ControlBox(True)
+Gui.frmEstimating..MaxButton(True)
+Gui.frmEstimating..MinButton(True)
+Gui.frmEstimating..MousePointer(0)
+Gui.frmEstimating..Moveable(True)
+Gui.frmEstimating..Sizeable(True)
+Gui.frmEstimating..ShowInTaskBar(True)
+Gui.frmEstimating..TitleBar(True)
+Gui.frmEstimating..BarRefreshButton(True)
+Gui.frmEstimating..BarExportButton(True)
+Gui.frmEstimating..Event(UnLoad,frmEstimating_UnLoad)
+Gui.frmEstimating.tab1.Create(Tab)
+Gui.frmEstimating.tab1.Enabled(True)
+Gui.frmEstimating.tab1.Visible(True)
+Gui.frmEstimating.tab1.Zorder(0)
+Gui.frmEstimating.tab1.Size(1020,650)
+Gui.frmEstimating.tab1.Position(2,0)
+Gui.frmEstimating.tab1.FontName("Tahoma")
+Gui.frmEstimating.tab1.FontSize(8.25)
+Gui.frmEstimating.tab1.Tabs(3)
+Gui.frmEstimating.tab1.SetTab(0)
+Gui.frmEstimating.tab1.Caption("Unit Creation")
+Gui.frmEstimating.tab1.SetTab(1)
+Gui.frmEstimating.tab1.Caption("Unit List Upload")
+Gui.frmEstimating.tab1.SetTab(2)
+Gui.frmEstimating.tab1.Caption("Material Take Off")
+Gui.frmEstimating.txtParent.Create(TextBox,"",True,160,20,0,4,18,False,0,"Arial",8,-2147483643,1)
+Gui.frmEstimating.txtParent.Event(LostFocus,txtParent_LostFocus)
+Gui.frmEstimating.txtParent.Parent("tab1",2)
+Gui.frmEstimating.lbl3.Create(Label,"Customer",True,46,13,0,673,2,True,0,"Tahoma",8.25,,0,0)
+Gui.frmEstimating.lbl3.BorderStyle(0)
+Gui.frmEstimating.lbl3.Parent("tab1",2)
+Gui.frmEstimating.cmdUpload.Create(Button)
+Gui.frmEstimating.cmdUpload.Size(91,25)
+Gui.frmEstimating.cmdUpload.Position(806,3)
+Gui.frmEstimating.cmdUpload.Caption("Upload BOMs")
+Gui.frmEstimating.cmdUpload.Event(Click,cmdUpload_Click)
+Gui.frmEstimating.cmdUpload.Visible(False)
+Gui.frmEstimating.cmdUpload.Parent("tab1",0)
+Gui.frmEstimating.cmdUpload.Enabled(True)
+Gui.frmEstimating.cmdUpload.Zorder(0)
+Gui.frmEstimating.cmdUpload.FontName("Tahoma")
+Gui.frmEstimating.cmdUpload.FontSize(8.25)
+Gui.frmEstimating.cmdProcess.Create(Button)
+Gui.frmEstimating.cmdProcess.Size(74,25)
+Gui.frmEstimating.cmdProcess.Position(355,33)
+Gui.frmEstimating.cmdProcess.Caption("Process")
+Gui.frmEstimating.cmdProcess.Event(Click,cmdProcess_Click)
+Gui.frmEstimating.cmdProcess.Enabled(True)
+Gui.frmEstimating.cmdProcess.Visible(True)
+Gui.frmEstimating.cmdProcess.Zorder(0)
+Gui.frmEstimating.cmdProcess.FontName("Tahoma")
+Gui.frmEstimating.cmdProcess.FontSize(8.25)
+Gui.frmEstimating.cmdProcess.Parent("tab1",0)
+Gui.frmEstimating.txtText.Create(TextboxM)
+Gui.frmEstimating.txtText.Size(346,607)
+Gui.frmEstimating.txtText.Position(3,3)
+Gui.frmEstimating.txtText.Parent("tab1",0)
+Gui.frmEstimating.txtText.Enabled(True)
+Gui.frmEstimating.txtText.Visible(True)
+Gui.frmEstimating.txtText.Zorder(0)
+Gui.frmEstimating.txtText.FontName("Tahoma")
+Gui.frmEstimating.txtText.FontSize(8.25)
+Gui.frmEstimating.trvUnits.Create(TreeView)
+Gui.frmEstimating.trvUnits.Size(372,607)
+Gui.frmEstimating.trvUnits.Position(433,3)
+Gui.frmEstimating.trvUnits.Parent("tab1",0)
+Gui.frmEstimating.trvUnits.Enabled(True)
+Gui.frmEstimating.trvUnits.Visible(True)
+Gui.frmEstimating.trvUnits.Zorder(0)
+Gui.frmEstimating.trvUnits.FontName("Tahoma")
+Gui.frmEstimating.trvUnits.FontSize(8.25)
+Gui.frmEstimating.lbl4.Create(Label,"Filename:",True,46,13,0,14,44,True,0,"Tahoma",8.25,,0,0)
+Gui.frmEstimating.lbl4.BorderStyle(0)
+Gui.frmEstimating.lbl4.Parent("tab1",1)
+Gui.frmEstimating.txtBOMParent.Create(TextBox,"",True,203,20,0,11,22,True,0,"Arial",8,-2147483643,1)
+Gui.frmEstimating.txtBOMParent.MaxLength(20)
+Gui.frmEstimating.txtBOMParent.Parent("tab1",1)
+Gui.frmEstimating.cmdUploadBOM.Create(Button)
+Gui.frmEstimating.cmdUploadBOM.Size(200,28)
+Gui.frmEstimating.cmdUploadBOM.Position(11,82)
+Gui.frmEstimating.cmdUploadBOM.Caption("Upload BOM Unit List")
+Gui.frmEstimating.cmdUploadBOM.Event(Click,cmdUploadBOM_Click)
+Gui.frmEstimating.cmdUploadBOM.Parent("tab1",1)
+Gui.frmEstimating.cmdUploadBOM.Enabled(True)
+Gui.frmEstimating.cmdUploadBOM.Visible(True)
+Gui.frmEstimating.cmdUploadBOM.Zorder(0)
+Gui.frmEstimating.cmdUploadBOM.FontName("Tahoma")
+Gui.frmEstimating.cmdUploadBOM.FontSize(8.25)
+Gui.frmEstimating.cmdBrowseFile.Create(Button)
+Gui.frmEstimating.cmdBrowseFile.Size(32,23)
+Gui.frmEstimating.cmdBrowseFile.Position(358,58)
+Gui.frmEstimating.cmdBrowseFile.Caption("^")
+Gui.frmEstimating.cmdBrowseFile.Event(Click,cmdBrowseFile_Click)
+Gui.frmEstimating.cmdBrowseFile.Parent("tab1",1)
+Gui.frmEstimating.cmdBrowseFile.Enabled(True)
+Gui.frmEstimating.cmdBrowseFile.Visible(True)
+Gui.frmEstimating.cmdBrowseFile.Zorder(0)
+Gui.frmEstimating.cmdBrowseFile.FontName("Tahoma")
+Gui.frmEstimating.cmdBrowseFile.FontSize(8.25)
+Gui.frmEstimating.txtFileName.Create(TextBox,"",True,342,20,0,12,59,True,0,"Arial",8,-2147483643,1)
+Gui.frmEstimating.txtFileName.Parent("tab1",1)
+Gui.frmEstimating.lbl1.Create(Label,"BOM Name:",True,56,13,0,16,6,True,0,"Tahoma",8.25,,0,0)
+Gui.frmEstimating.lbl1.BorderStyle(0)
+Gui.frmEstimating.lbl1.Parent("tab1",1)
+Gui.frmEstimating.cmdBrowseCust.Create(Button)
+Gui.frmEstimating.cmdBrowseCust.Enabled(True)
+Gui.frmEstimating.cmdBrowseCust.Visible(True)
+Gui.frmEstimating.cmdBrowseCust.Zorder(0)
+Gui.frmEstimating.cmdBrowseCust.Size(35,23)
+Gui.frmEstimating.cmdBrowseCust.Position(748,16)
+Gui.frmEstimating.cmdBrowseCust.Caption("^")
+Gui.frmEstimating.cmdBrowseCust.FontName("Tahoma")
+Gui.frmEstimating.cmdBrowseCust.FontSize(8.25)
+Gui.frmEstimating.cmdBrowseCust.DefaultValue("")
+Gui.frmEstimating.cmdBrowseCust.Event(Click,cmdBrowseCust_Click)
+Gui.frmEstimating.cmdBrowseCust.Parent("tab1",2)
+Gui.frmEstimating.txtCustomer.Create(TextBox,"",True,75,20,0,671,18,True,0,"Tahoma",8.25,,1)
+Gui.frmEstimating.txtCustomer.Parent("tab1",2)
+Gui.frmEstimating.lbl2.Create(Label,"Margin",True,32,13,0,625,2,True,0,"Tahoma",8.25,,0,0)
+Gui.frmEstimating.lbl2.BorderStyle(0)
+Gui.frmEstimating.lbl2.Parent("tab1",2)
+Gui.frmEstimating.txtMargin.Create(TextBox,"",True,44,20,0,624,18,True,0,"Tahoma",8.25,,1)
+Gui.frmEstimating.txtMargin.Parent("tab1",2)
+Gui.frmEstimating.cmdCreateQuote.Create(Button)
+Gui.frmEstimating.cmdCreateQuote.Enabled(True)
+Gui.frmEstimating.cmdCreateQuote.Visible(True)
+Gui.frmEstimating.cmdCreateQuote.Zorder(0)
+Gui.frmEstimating.cmdCreateQuote.Size(100,23)
+Gui.frmEstimating.cmdCreateQuote.Position(785,16)
+Gui.frmEstimating.cmdCreateQuote.Caption("Create Quote")
+Gui.frmEstimating.cmdCreateQuote.FontName("Tahoma")
+Gui.frmEstimating.cmdCreateQuote.FontSize(8.25)
+Gui.frmEstimating.cmdCreateQuote.Event(Click,cmdCreateQuote_Click)
+Gui.frmEstimating.cmdCreateQuote.Parent("tab1",2)
+Gui.frmEstimating.chkUseAltCost.Create(CheckBox)
+Gui.frmEstimating.chkUseAltCost.Enabled(True)
+Gui.frmEstimating.chkUseAltCost.Visible(True)
+Gui.frmEstimating.chkUseAltCost.Zorder(0)
+Gui.frmEstimating.chkUseAltCost.Size(177,20)
+Gui.frmEstimating.chkUseAltCost.Position(366,17)
+Gui.frmEstimating.chkUseAltCost.Caption("Use Alt Cost from Inventory")
+Gui.frmEstimating.chkUseAltCost.FontName("Tahoma")
+Gui.frmEstimating.chkUseAltCost.FontSize(8.25)
+Gui.frmEstimating.chkUseAltCost.Parent("tab1",2)
+Gui.frmEstimating.chkByPass.Create(CheckBox)
+Gui.frmEstimating.chkByPass.Size(151,20)
+Gui.frmEstimating.chkByPass.Position(209,17)
+Gui.frmEstimating.chkByPass.Caption("Bypass BOM Cost Buildup")
+Gui.frmEstimating.chkByPass.Enabled(True)
+Gui.frmEstimating.chkByPass.Visible(True)
+Gui.frmEstimating.chkByPass.Zorder(0)
+Gui.frmEstimating.chkByPass.FontName("Tahoma")
+Gui.frmEstimating.chkByPass.FontSize(8.25)
+Gui.frmEstimating.chkByPass.Parent("tab1",2)
+Gui.frmEstimating.gsgcParts.Create(GsGridControl)
+Gui.frmEstimating.gsgcParts.Size(1009,571)
+Gui.frmEstimating.gsgcParts.Position(4,46)
+Gui.frmEstimating.gsgcParts.Enabled(True)
+Gui.frmEstimating.gsgcParts.Visible(True)
+Gui.frmEstimating.gsgcParts.Zorder(0)
+Gui.frmEstimating.gsgcParts.Parent("tab1",2)
+Gui.frmEstimating.cmdBrowse.Create(Button)
+Gui.frmEstimating.cmdBrowse.Size(30,25)
+Gui.frmEstimating.cmdBrowse.Position(170,16)
+Gui.frmEstimating.cmdBrowse.Caption("^")
+Gui.frmEstimating.cmdBrowse.Event(Click,cmdBrowse_Click)
+Gui.frmEstimating.cmdBrowse.Enabled(True)
+Gui.frmEstimating.cmdBrowse.Visible(True)
+Gui.frmEstimating.cmdBrowse.Zorder(0)
+Gui.frmEstimating.cmdBrowse.FontName("Tahoma")
+Gui.frmEstimating.cmdBrowse.FontSize(8.25)
+Gui.frmEstimating.cmdBrowse.Parent("tab1",2)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+v.Global.sFileUpload.Declare
+Program.External.Include.Library("6004.lib")
+Program.External.Include.Library("175100.lib")
+Program.External.Include.Library("175200.lib")
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+f.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+F.Intrinsic.UI.SetBrowserHotTypeAhead(true)
+f.ODBC.Connection!con.opencompanyconnection(60)
+f.Intrinsic.Control.CallSub(createDataTable)
+F.Intrinsic.Control.CallSub(SetContextMenus)
+f.Intrinsic.Control.CallSub(setAnchors)
+gui.frmEstimating.chkByPass.Value(1)
+gui.frmEstimating.chkUseAltCost.Value(1)
+gui.frmEstimating.tab1.SetTab(0)
+gui.frmEstimating..Show
+Program.Sub.Main.End
+
+Program.Sub.cmdBrowseFile_Click.Start
+f.Intrinsic.Control.Try
+	v.Local.sret.Declare
+	Function.Intrinsic.UI.ShowOpenFileDialog("","CSV File|*.csv","My Documents",v.Local.sret)
+	F.Intrinsic.Control.If(v.Local.sret,<>,"***CANCEL***")
+		gui.frmEstimating.txtFileName.Text(v.Local.sret)
+	F.Intrinsic.Control.EndIf
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.ODBC.Connection!con.Close
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdBrowseFile_Click.End
+
+Program.Sub.cmdUploadBOM_Click.Start
+f.Intrinsic.Control.Try
+	'Set Default Variables
+	v.Local.sDescription.Declare
+	v.Local.sPromiseDate.Declare
+	V.Local.sEstimate.Declare
+	V.Local.sGSSPart.Declare
+	v.Local.sFilename.Declare
+	v.Local.sFiledir.Declare
+	v.Local.sRet.Declare
+	v.Local.sQuote.Declare
+	v.Local.sCustomer.Declare
+	v.Local.sFile.Declare
+	v.Local.sParams.Declare
+	v.Local.sTemp.Declare
+	v.Local.sSql.Declare
+	v.Local.sType.Declare
+	v.Local.sPL.Declare
+	v.Local.sSeq.Declare
+	v.Local.sParent.Declare
+	v.Local.sUser1.Declare
+	v.Local.sUser2.Declare
+	v.Local.sUser3Level.Declare
+	v.Local.sUser4UnitNo.Declare
+	v.Local.sUser5UnitType.Declare
+	v.Local.sUnitType.Declare
+	
+	v.Local.i.Declare(Long,0)
+	v.Local.j.Declare(long)
+	v.Local.x.Declare(long)
+	v.Local.lWeek.Declare
+	v.Local.iRet.Declare
+	v.Local.iCount.Declare
+	v.Local.iTotQty.Declare
+	v.Local.iQty.Declare
+	
+	v.Local.dDueDate.Declare(date,v.Ambient.Now)
+	
+	v.Local.bCheck.Declare
+	v.Local.bBOM.Declare
+	v.Local.bSales.Declare
+	v.Local.bEstimate.Declare
+	v.Local.bFileLock.Declare
+	
+	v.Local.sQuote.Set("")
+	
+	f.Intrinsic.UI.InvokeWaitDialog("Processing...")
+	
+	'Set File
+	v.Local.sFile.Set(v.Screen.frmEstimating!txtFileName.text)
+	
+	'Determine the type
+	v.Local.sType.Set("BOM")
+	v.Local.sFilename.Set("BOMHDR.txt")
+	v.Local.sParent.Set(v.Screen.frmEstimating!txtBOMParent.text)
+	f.Intrinsic.Control.If(v.Local.sParent.Trim,=,"")
+		f.Intrinsic.UI.Msgbox("BOM Name must be filled in before uploading file.")
+		F.Intrinsic.UI.CloseWaitDialog
+		f.Intrinsic.Control.ExitSub
+	f.Intrinsic.Control.EndIf
+	
+	'Determine if file is locked
+	F.Intrinsic.String.Concat(V.Caller.FilesDir,"\",V.Local.sFilename,V.local.sFiledir)
+	F.Intrinsic.File.IsFileLocked(v.Local.sfiledir,v.Local.bFileLock)
+	f.Intrinsic.Control.If(v.Local.bFileLock)
+		f.Intrinsic.UI.Msgbox("BOM Upload File locked, please try again momentairly.")
+		F.Intrinsic.UI.CloseWaitDialog
+		f.Intrinsic.Control.ExitSub
+	f.Intrinsic.Control.EndIf
+
+	'Open File for writing
+	f.Intrinsic.File.GetHandle(v.local.iRet)
+	f.Intrinsic.File.OpenForWrite(V.local.sfiledir,v.local.iRet)
+			
+	'Read file & loop
+	f.Data.DataTable.CreateFromCSV("dt",v.Local.sfile,"Level*!*UnitType*!*Scheme*!*Tower*!*UnitNo","String*!*String*!*String*!*String*!*String",true)	
+	f.Data.DataTable.AddColumn("dt","Qty","Integer",1)
+	f.Data.DataView.Create("dt","dv")
+
+	'BOM Upload Top level
+	f.Intrinsic.Control.CallSub(uploadBOM,"Part","","Rev","","Qty",1,"UM","EA","Desc",v.Local.sParent,"Vendor","","Category","Phantom","Source","F","Parent",v.Local.sParent.UCase,"Seq","0000")
+
+	'Bill of Material summarisation
+	'f.Data.DataView.ToDataTableDistinct("dt","dv","dtUnitTypes","UnitType")
+	f.Intrinsic.Control.For(v.Local.j,1,v.DataTable.dt.RowCount--,1)
+		F.Intrinsic.Control.If(V.DataTable.dt(v.Local.j).UnitType!fieldvaltrim,<>,"")
+			f.Intrinsic.Math.Add(v.Local.iCount,1,v.Local.iCount)
+			f.Intrinsic.String.LPad(v.local.iCount,"0",3,v.Local.sSeq)
+			f.Intrinsic.String.Concat(v.Local.sSeq,"0",v.Local.sSeq)
+			v.Local.sGSSPart.Set(v.DataTable.dt(v.Local.j).UnitType!fieldvaltrim)
+			V.Local.iQty.Set(v.DataTable.dt(v.Local.j).Qty!fieldval)
+			f.Intrinsic.String.Replace(v.Local.sGSSPart.UCase,"TYPE","",v.Local.sGSSPart)
+			f.Intrinsic.String.LTrim(v.Local.sGSSPart,v.Local.sGSSPart)
+			f.Intrinsic.String.Build("UnitType='{0}'",v.DataTable.dt(v.Local.j).UnitType!fieldvaltrim,v.Local.sTemp)
+			'f.Data.DataTable.Compute("dt","SUM(Qty)",v.Local.sTemp,v.Local.iTotQty)
+			f.Intrinsic.String.Replace(v.DataTable.dt(v.Local.j).UnitType!fieldvaltrim,"Unit Type","",v.Local.sUnitType)
+			f.Intrinsic.Control.CallSub(uploadBOM,"Part",v.Local.sGSSPart,"Rev","","Qty",v.Local.iQty,"UM","EA","Desc",v.Local.sDescription,"Vendor","","Category","Normal","Source","F","Parent",V.Local.sParent.UCase,"Seq",v.Local.sSeq)
+		F.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Next(v.Local.j)
+	
+	'Bring string into File
+	f.Intrinsic.File.WriteLine(v.Local.iRet,v.global.sfileupload)
+	f.Intrinsic.File.CloseFile(v.Local.iRet)	
+	
+	'Delete from table
+	f.Intrinsic.String.Build("Delete from BOM_Eng where part IN ('{0}')",v.Local.sParent,V.Local.sSql)
+	f.ODBC.Connection!con.Execute(V.Local.sSql)
+	f.Intrinsic.String.Build("Delete from bom_mstr where parent IN ('{0}')",v.Local.sParent,V.Local.sSql)
+	F.ODBC.Connection!con.Execute(V.Local.sSql)
+		
+	'Upload BOM
+	F.Global.General.CallWrapperSync(6010,"NS!*!50")
+	F.Intrinsic.String.ConcatCallWrapperArgs(V.Local.sParent.UCase,"",V.Local.sParams)
+	F.Global.General.CallWrapperSync(1001,v.Local.sParams)
+		
+	f.Intrinsic.UI.Msgbox("Upload Complete.")
+	F.Intrinsic.UI.CloseWaitDialog
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.ODBC.Connection!con.Close
+	f.Intrinsic.File.CloseFile(v.Local.iRet)
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdUploadBOM_Click.End
+
+Program.Sub.createDataTable.Start
+f.Data.DataTable.create("dtBU",true)
+f.Data.DataTable.AddColumn("dtBU","Parent","string")
+f.Data.DataTable.AddColumn("dtBU","Part","string")
+f.Data.DataTable.AddColumn("dtBU","Description","string")
+f.Data.DataTable.AddColumn("dtBU","UM","string")
+f.Data.DataTable.AddColumn("dtBU","QTY","string")
+f.Data.DataTable.AddColumn("dtBU","Source","string")
+f.Data.DataTable.AddColumn("dtBU","Cost","string")
+f.Data.DataTable.AddColumn("dtBU","Seq","string")
+Program.Sub.createDataTable.End
+
+Program.Sub.cmdUpload_Click.Start
+f.Intrinsic.Control.Try
+	V.Local.sFileDir.Declare
+	v.Local.sSql.Declare
+	v.Local.lRet.Declare
+	v.Local.i.Declare
+	
+	f.Intrinsic.UI.InvokeWaitDialog("Upload BOMs")
+	gui.frmEstimating.cmdUploadBOM.Enabled(false)
+	'Get Parents to distinct table then delete
+	F.Data.DataView.Create("dtBU","dvBU")
+	f.Data.DataView.ToDataTableDistinct("dtBU","dvBU","dtParents","PARENT")
+	F.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtParents.RowCount--,1)
+		f.Intrinsic.String.Build("Delete from BOM_Eng where part IN ('{0}')",v.DataTable.dtParents(v.Local.i).PARENT!FIELDVALTRIM,V.Local.ssql)
+		f.ODBC.Connection!con.Execute(V.Local.ssql)
+		f.Intrinsic.String.Build("Delete from bom_mstr where parent IN ('{0}')",v.DataTable.dtParents(v.Local.i).PARENT!FIELDVALTRIM,V.Local.ssql)
+		F.ODBC.Connection!con.execute(V.Local.ssql)
+	F.Intrinsic.Control.Next(v.Local.i)
+	
+	'Format BOM file
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtBU.RowCount--,1)
+		f.Intrinsic.Control.CallSub(uploadBOM,"Part",v.DataTable.dtBU(v.Local.i).Part!fieldvaltrim,"Rev","","Qty",v.DataTable.dtBU(v.Local.i).Qty!fieldvaltrim,"UM",v.DataTable.dtBU(v.Local.i).UM!fieldvaltrim,"Desc",v.DataTable.dtBU(v.Local.i).Description!fieldvaltrim,"Vendor","","Category","","Source",v.DataTable.dtBU(v.Local.i).Source!fieldvaltrim,"Parent",v.DataTable.dtBU(v.Local.i).Parent!fieldvaltrim,"iCount",v.Local.i,"Seq",v.DataTable.dtBU(v.Local.i).Seq!fieldvaltrim)
+	f.Intrinsic.Control.Next(v.Local.i)
+	
+	'Bring string into File
+	F.Intrinsic.String.Concat(V.Caller.FilesDir,"\BOMHDR.TXT",V.local.sfiledir)
+	
+	'Blank file
+	f.Intrinsic.File.String2File(v.Local.sFileDir,"")
+	
+	'Write to File
+	f.Intrinsic.File.GetHandle(v.local.lRet)
+	f.Intrinsic.File.OpenForWrite(V.local.sfiledir,v.local.lRet)
+	f.Intrinsic.File.WriteLine(v.Local.lRet,v.global.sfileupload)
+	f.Intrinsic.File.CloseFile(v.Local.lRet)
+	
+	'Upload BOM
+	gui.frmEstimating.cmdUploadBOM.Enabled(true)
+	F.Global.General.CallWrapperSync(6010,"NS!*!50")
+	f.Intrinsic.ui.CloseWaitDialog
+	
+	'f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+	
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdUpload_Click.End
+
+
+Program.Sub.cmdProcess_Click.Start
+F.Intrinsic.Control.Try
+	v.Local.sText.Declare
+	v.Local.sLines.Declare
+	v.Local.sValues.Declare
+	v.Local.sBOMParent.Declare
+	v.Local.sType.Declare
+	V.Local.sTypeN.Declare
+	v.Local.sPartNum.Declare
+	v.Local.sPartNumN.Declare
+	v.Local.sSeq.Declare
+	v.Local.i.Declare
+	v.Local.iFocus.Declare
+	v.Local.icount.Declare
+	v.Local.sText.Set(v.Screen.frmEstimating!txtText.text)
+	gui.frmEstimating.trvUnits.Visible(False)
+	gui.frmEstimating.cmdProcess.Enabled(false)
+	f.Intrinsic.String.Split(v.Local.sText,v.Ambient.NewLine,v.Local.sLines)
+	f.Intrinsic.Control.For(v.Local.i,0,v.Local.sLines.UBound,1)
+		f.Intrinsic.String.Split(v.Local.sLines(v.Local.i),v.Ambient.Tab,v.Local.sValues)
+		f.Intrinsic.Control.If(v.Local.sValues(0).trim,<>,"")
+			'Special, add 1 to the focus
+			f.Intrinsic.Math.Add(v.Local.iFocus,1,v.Local.iFocus)
+			
+			'Clean up the characters, take out the word type, reset sequence to 0
+			v.Local.sBOMParent.Set(v.Local.sValues)
+			f.Intrinsic.String.Replace(v.Local.sBOMParent,"Type","",v.Local.sBOMParent)
+			f.Intrinsic.String.LTrim(v.Local.sBOMParent,v.Local.sBOMParent)
+			f.Intrinsic.String.UCase(v.Local.sBOMParent,v.Local.sBOMParent)
+			v.Local.icount.Set(0)
+			
+			'Add to datatable and treeview
+			f.Data.DataTable.AddRow("dtBU","Parent",v.Local.sBOMParent,"Part","","Description",v.Local.sValues,"UM","EA","QTY",1,"Source","F","Cost",0,"Seq","0000")
+		
+			gui.frmEstimating.trvUnits.AddTreeNode("",v.Local.iFocus,v.Local.sBOMParent,v.Local.sBOMParent,true)
+			
+		f.Intrinsic.Control.ElseIf(v.Local.sValues(1).trim,<>,"")
+			'Add Type
+			v.Local.sType.Set(v.Local.sValues(1))
+			f.Intrinsic.String.Concat(v.Local.sType,v.Local.i,v.Local.sTypeN)
+			gui.frmEstimating.trvUnits.AddTreeNode(v.Local.sBOMParent,v.Local.iFocus,v.Local.sTypeN,v.Local.sType,true)
+			
+		f.Intrinsic.Control.ElseIf(v.Local.sValues(2).trim,<>,"")
+			'Format Part and set unique number in tree
+			v.Local.sPartNum.Set(v.Local.sValues(2))
+			f.Intrinsic.String.UCase(v.Local.sPartNum,v.Local.sPartNum)
+			f.Intrinsic.Math.Add(v.Local.iCount,1,v.Local.iCount)
+			f.Intrinsic.String.LPad(v.LOCAL.icount,"0",3,v.Local.sseq)
+			f.Intrinsic.String.Concat(v.Local.sseq,"0",v.Local.sseq)
+			f.Intrinsic.String.Concat(v.Local.sPartNum,v.Local.i,v.Local.sPartNumN)
+			
+			'Add to datatable and treeview
+			f.Data.DataTable.AddRow("dtBU","Parent",v.Local.sBOMParent,"Part",v.Local.sPartNum,"Description",v.Local.sPartNum,"UM","EA","QTY",1,"Source","F","Cost",0,"Seq",v.Local.sSeq)
+			gui.frmEstimating.trvUnits.AddTreeNode(v.Local.sTypeN,v.Local.iFocus,v.Local.sPartNumN,v.Local.sPartNum,true)
+		f.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Next(v.Local.i)
+	gui.frmEstimating.cmdProcess.Enabled(true)
+	gui.frmEstimating.trvUnits.Visible(true)
+	gui.frmEstimating.cmdUpload.Visible(true)
+F.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdProcess_Click.End
+
+Program.Sub.uploadBOM.Start
+v.Local.sError.Declare(String)
+V.Local.sLine.Declare(String)
+V.Local.sParent.Declare(String)
+V.Local.sPart.Declare(String)
+V.Local.sSeq.Declare(String)
+V.Local.sDescription.Declare(String)
+V.Local.sCount.Declare(String)
+V.Local.sUM.Declare(String)
+V.Local.sCategory.Declare(String)
+V.Local.sSource.Declare(String)
+V.Local.sMisc.Declare(String)
+V.Local.iFor.Declare(Long)
+V.Local.i7.Declare(Long)
+V.Local.sRev.Declare(String)
+V.Local.schild.Declare(String)
+V.Local.sqty.Declare(String)
+V.Local.spno.Declare(String)
+V.Local.suom.Declare(String)
+V.Local.sDesc.Declare(String)
+V.Local.spad.Declare(String)
+V.Local.spad1.Declare(String)
+V.Local.spad2.Declare(String)
+V.Local.spad3.Declare(String)
+V.Local.sRMLine.Declare(String)
+V.Local.sRMParent.Declare(String)
+v.Local.ssql.Declare(String)
+V.Local.sVendcode.Declare(String)
+v.Local.sPL.Declare(string)
+V.Local.sTempCategory.Declare(String)
+
+F.Intrinsic.String.RPad(v.Args.Part," ",17,V.Local.sPart)
+F.Intrinsic.String.Left(V.Local.sPart,17,V.Local.sPart)
+
+F.Intrinsic.String.RPad(v.Args.Rev," ",3,V.Local.sRev)
+F.Intrinsic.String.Left(V.Local.sRev,3,V.Local.sRev)
+
+'Parent
+F.Intrinsic.String.RPad(V.Args.Parent," ",20,V.Local.sParent)
+F.Intrinsic.String.Concat(v.global.sfileupload,v.Local.sParent,v.global.sfileupload)
+
+'Sequences
+f.Intrinsic.String.LPad(v.args.Seq,"0",4,v.Local.sLine)
+F.Intrinsic.String.Concat(v.global.sfileupload,v.Local.sLine,v.global.sfileupload)
+
+'Quantity
+Function.Intrinsic.String.Format(v.Args.QTY,"####.0000", variable.local.sqty)
+F.Intrinsic.String.LPad(variable.local.sqty,"0",16,V.Local.sqty)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sqty,v.global.sfileupload)
+
+'Part & Rev put together
+F.Intrinsic.String.GSSPartString(V.Local.sPart,V.Local.sRev,V.Local.sPart)
+f.Intrinsic.String.RPad(v.Local.sPart," ",20,v.Local.sPart)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sPart,v.global.sfileupload)
+
+'UM
+F.Intrinsic.String.RPad(v.Args.UM," ",2,V.Local.sUM)
+F.Intrinsic.String.Left(V.Local.sUM,2,V.Local.sUM)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sUM,v.global.sfileupload)
+
+'Descriptions
+F.Intrinsic.String.RPad(V.Args.DESC," ",30,V.Local.sdesc)
+'F.Intrinsic.String.RPad(" "," ",30,V.Local.sdesc)
+F.Intrinsic.String.Left(V.Local.sdesc,30,V.Local.sdesc)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sdesc,v.global.sfileupload)
+
+'Free Pad
+F.Intrinsic.String.RPad(V.Local.spad1," ",113,V.Local.spad1)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad1,v.global.sfileupload)
+
+''Vendor Code
+'F.Intrinsic.String.RPad(v.Args.Vendor," ",6,V.Local.sVendcode)
+'F.Intrinsic.String.Left(V.Local.sVendcode,6,V.Local.sVendcode)
+'F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.svendcode,v.global.sfileupload)
+
+'Free Pad
+'F.Intrinsic.String.RPad(V.Local.spad2," ",48,V.Local.spad2)
+'F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad2,v.global.sfileupload)
+
+'Category
+F.Intrinsic.Control.If(V.Args.Category.Trim,=,"Phantom")
+	F.Intrinsic.String.Concat(v.global.sfileupload,"P",v.global.sfileupload)
+f.Intrinsic.Control.Else
+	F.Intrinsic.String.Concat(v.global.sfileupload," ",v.global.sfileupload)
+F.Intrinsic.Control.EndIf
+
+'Source
+F.Intrinsic.String.Concat(v.global.sfileupload,V.args.Source,v.global.sfileupload)
+
+'Free Pad
+F.Intrinsic.String.RPad(V.Local.spad3," ",90,V.Local.spad3)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad3,v.global.sfileupload)
+
+f.Intrinsic.String.Concat(v.Global.sfileupload,v.Ambient.NewLine,v.Global.sfileupload)
+
+Program.Sub.uploadBOM.End
+
+Program.Sub.setAnchors.Start
+f.Intrinsic.Control.Try
+	gui.frmEstimating.tab1.Anchor(15)
+	gui.frmEstimating.gsgcParts.anchor(15)
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+
+f.Intrinsic.Control.EndTry
+Program.Sub.setAnchors.End
+
+Program.Sub.txtParent_LostFocus.Start
+F.Intrinsic.Control.Try
+	v.Local.sParent.Declare
+	v.Local.sParent.Set(v.Screen.frmEstimating!txtParent.Text)
+	
+	F.Intrinsic.Control.If(v.Local.sParent.Trim,<>,"")
+		f.Intrinsic.Control.CallSub(CostBuild)
+	F.Intrinsic.Control.EndIf
+	
+F.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+
+F.Intrinsic.Control.EndTry
+Program.Sub.txtParent_LostFocus.End
+
+Program.Sub.cmdBrowse_Click.Start
+F.Intrinsic.Control.Try
+	V.Local.sSQL.Declare
+	V.Local.sCol.Declare
+	V.Local.sColW.Declare
+	V.Local.sRet.Declare
+	V.Local.sSQL.set("Select PART, DESCRIPTION FROM V_BOM_ENG order by PART")
+	'Split Column Names into an array (*!* delimited string)
+	F.Intrinsic.String.Split("Parent*!*Description","*!*",V.Local.sCol)
+	'Split Column widths into an array (*!* delimited string)
+	F.Intrinsic.String.Split("2000*!*3000","*!*",V.Local.sColW)
+	F.Intrinsic.UI.Browser("Select a Parent","con",V.Local.sSQL,V.Local.sCol,V.Local.sColW,V.Local.sRet)
+	F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+		f.Intrinsic.String.Split(v.Local.sRet,"*!*",v.Local.sRet)
+		gui.frmEstimating.txtParent.Text(v.Local.sRet(0))
+		f.Intrinsic.Control.CallSub(CostBuild)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdBrowse_Click.End
+
+Program.Sub.cmdCreateQuote_Click.Start
+f.Intrinsic.Control.Try
+	v.Local.sCustomer.Declare
+	v.Local.sParent.Declare
+	v.Local.sExtension.Declare
+	v.Local.fExtension.Declare
+	v.Local.fMargin.Declare
+	v.Local.fInverse.Declare
+	v.Local.fTotalCost.Declare
+	
+	'Set Variables
+	v.Local.sParent.Set(v.Screen.frmEstimating!txtParent.Text)
+	v.Local.sCustomer.Set(v.Screen.frmEstimating!txtCustomer.Text)
+	v.Local.fMargin.Set(v.Screen.frmEstimating!txtMargin.text)
+	f.Data.DataTable.Compute("dtParts","Sum(TotalCost)","",v.Local.fTotalCost)
+	f.Intrinsic.Control.If(v.Local.fMargin,<>,0)
+	f.Intrinsic.Control.AndIf(v.Local.fTotalCost,<>,0)
+		f.Intrinsic.Math.Sub(100,v.Local.fMargin,v.Local.fInverse)
+		f.Intrinsic.Math.Mult(v.Local.fInverse,.01,v.Local.fInverse)
+		f.Intrinsic.Math.Div(v.Local.fTotalCost,v.Local.fInverse,v.Local.fExtension)
+	f.Intrinsic.Control.EndIf
+	
+	'Format the extension
+	F.Intrinsic.Math.Round(V.Local.fExtension,6,V.Local.fExtension)
+	F.Intrinsic.String.Format(v.Local.fExtension,"##########.000000",v.Local.sExtension)
+	F.Intrinsic.String.Replace(V.Local.sExtension,".","",V.Local.sExtension)
+	F.Intrinsic.String.LPad(V.Local.sExtension,"0",16,V.Local.sExtension)
+	
+	'Create the quote
+	f.Data.Datatable.AddRow("6004Header","Type","Q","CustNum",V.Local.sCustomer.Trim)
+	f.Data.Datatable.AddRow("6004Lines","QtyOrdered","0000000010000","UM","6004Header","Part",v.Local.sParent,"PL","FG","PartDescription",v.Local.sParent,"QuotedPrice",v.Local.sExtension,"User3","1","User4","1","User5","1")
+	f.Intrinsic.Control.CallSub(6004Sync)
+	
+	f.Intrinsic.UI.Msgbox("Quote Creation complete.")
+	
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+f.Intrinsic.Control.EndTry
+Program.Sub.cmdCreateQuote_Click.End
+
+Program.Sub.cmdBrowseCust_Click.Start
+F.Intrinsic.Control.Try
+	V.Local.sSQL.Declare
+	V.Local.sCol.Declare
+	V.Local.sColW.Declare
+	V.Local.sRet.Declare
+	V.Local.sSQL.set("SELECT CUSTOMER, NAME_CUSTOMER FROM V_CUSTOMER_MASTER")
+	'Split Column Names into an array (*!* delimited string)
+	F.Intrinsic.String.Split("Customer*!*Name Customer","*!*",V.Local.sCol)
+	'Split Column widths into an array (*!* delimited string)
+	F.Intrinsic.String.Split("1000*!*2000","*!*",V.Local.sColW)
+	F.Intrinsic.UI.Browser("Select a customer","Con",V.Local.sSQL,V.Local.sCol,V.Local.sColW,V.Local.sRet)
+	F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+		f.Intrinsic.String.Split(v.Local.sRet,"*!*",v.Local.sret)
+		gui.frmEstimating.txtCustomer.Text(v.Local.sRet(0))
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdBrowseCust_Click.End
+
+Program.Sub.MenuClickCreatePO.Start
+f.Intrinsic.Control.Try
+	v.Local.i.Declare
+	v.Local.sVend.Declare
+	v.Local.sPart.Declare
+	v.Local.sDesc.Declare
+	v.Local.sPurU.Declare
+	v.Local.fPurC.Declare
+	v.Local.sPurC.Declare
+	v.Local.fPurQ.Declare
+	v.Local.sPurQ.Declare
+	v.Local.sGenL.Declare
+	v.Local.sPrdL.Declare
+	v.Local.sFile.Declare
+	v.Local.sCont.Declare
+	v.Local.sVals.Declare
+	v.Local.sPNum.Declare
+	v.Local.sPTyp.Declare
+	v.Local.sSQL.Declare
+	
+	F.Data.DataTable.AddRow("175100","AutoNumber","Y")
+	f.Intrinsic.Control.For(v.local.i,0,v.DataTable.dtParts.RowCount--,1)
+		f.Intrinsic.Control.If(v.DataTable.dtParts(v.Local.i).Select!fieldval)
+			v.Local.sPart.Set(v.DataTable.dtParts(v.Local.i).MATERIAL!FIELDVALTRIM)
+			v.Local.sVend.Set(v.DataTable.dtParts(v.Local.i).SUPPLIER!FIELDVALTRIM)
+			v.Local.sDesc.Set(v.DataTable.dtParts(v.Local.i).DESCRIPTION!FIELDVALTRIM)
+			v.Local.sPurU.Set(v.DataTable.dtParts(v.Local.i).PURUM!FIELDVALTRIM)
+			v.Local.fPurC.Set(v.DataTable.dtParts(v.Local.i).UnitCost!fieldval)
+			v.Local.fPurQ.Set(v.DataTable.dtParts(v.Local.i).TotalPurQty!fieldval)
+			v.Local.sPrdL.Set(v.DataTable.dtParts(v.Local.i).ProductLine!fieldvaltrim)
+			f.Intrinsic.String.Build("SELECT GL_ACCT FROM PL_GL_ACCOUNTS WHERE PROD_LINE='{0}' AND TYPE='2'",v.Local.sPrdL.Trim,v.Local.sSQL)
+			f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sGenL)
+			f.Data.DataTable.AddRow("175100File","Part",v.Local.sPart,"Vendor",v.Local.sVend,"Description",v.Local.sDesc,"POUM",v.Local.sPurU,"POQty",v.Local.fPurQ,"POCost",v.Local.fPurC,"GLAccount",v.Local.sGenL)
+		f.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Next(v.Local.i)	
+	f.Intrinsic.Control.CallSub(175100Sync)
+	
+	'Post Processing, need to set the PO to be a blanket purchase order
+	f.Intrinsic.Control.If(v.DataTable.dtPO.exists)
+		f.Data.DataTable.Close("dtPO")
+	f.Intrinsic.Control.EndIf
+	f.Data.DataTable.Create("dtPO",true)
+	f.Data.DataTable.AddColumn("dtPO","PONumber","String")
+	f.Intrinsic.String.Concat(v.Caller.FilesDir,"\SLPUR",v.Caller.Terminal,".TXT",v.Local.sFile)
+	f.Intrinsic.File.File2String(v.Local.sFile,v.Local.sCont)
+	f.Intrinsic.String.Split(v.Local.sCont,v.Ambient.NewLine,v.Local.sCont)
+	f.Intrinsic.Control.For(v.Local.i,0,v.Local.sCont.UBound,1)
+		f.Intrinsic.String.Split(v.Local.sCont(v.Local.i),v.Ambient.Tab,v.Local.sVals)
+		v.Local.sPNum.Set(v.Local.sVals(0))
+		v.Local.sPTyp.Set(v.Local.sVals(1))
+		f.Intrinsic.Control.If(v.Local.sPTyp.Trim,=,"A")
+			f.Data.DataTable.AddRow("dtPO","PONumber",v.Local.sPNum)
+			f.Intrinsic.String.Build("UPDATE PO_HEADER SET TYPE='1' WHERE PURCHASE_ORDER='{0}' AND RECORD_NO='  A '",v.Local.sPNum,v.Local.sSQL)
+			f.ODBC.Connection!con.Execute(v.Local.sSQL)
+		f.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Next(v.Local.i)
+	
+	'Open each purchase order
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtPO.RowCount--,1)
+		f.Data.DataTable.AddRow("175200","Mode","O","PONum",v.DataTable.dtPO(v.Local.i).PONumber!fieldvaltrim)
+	f.Intrinsic.Control.Next(v.Local.i)
+	f.Intrinsic.Control.CallSub(175200Sync)
+	
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+f.Intrinsic.Control.EndTry
+Program.Sub.MenuClickCreatePO.End
+
+Program.Sub.MenuClickExport.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare
+	
+	V.Local.sFileExport.Declare
+	V.Local.bExcel.Declare
+	V.Local.bFileLocked.Declare
+	V.Local.sMsg.Declare
+	V.Local.sDateTimeStamp.Declare
+	
+	F.Intrinsic.String.Format(V.Ambient.Now,"YYYYMMDD HHNNSS",v.local.sDateTimeStamp)
+	F.Automation.MSExcel.CheckPresence(V.Local.bExcel)
+	F.Intrinsic.Control.If(V.Local.bExcel)
+		F.Intrinsic.String.Build("{0}\GAB_5893_MATERIAL_TAKEOFF_{1}_Export.xlsx",V.Caller.LocalGssTempDir,V.Local.sDateTimeStamp,V.Local.sFileExport)
+		F.Intrinsic.File.IsFileLocked(V.Local.sFileExport,V.Local.bFileLocked)
+		F.Intrinsic.Control.If(V.Local.bFileLocked)
+			F.Intrinsic.String.Build("File is already open. Please close and export again.{0}File: {1}",V.Ambient.NewLine,V.Local.sFileExport,V.Local.sMsg)
+			F.Intrinsic.UI.Msgbox(V.Local.sMsg,"File In Use")
+		F.Intrinsic.Control.Else
+			Gui.frmEstimating.gsgcParts.Export(V.Local.sFileExport,"xlsx")
+			F.Intrinsic.Task.ShellExec(0,"",V.Local.sFileExport,"","",1)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("{0}\GAB_5893_MATERIAL_TAKEOFF{1}_Export.csv",V.Caller.LocalGssTempDir,V.Local.sDateTimeStamp,V.Local.sFileExport)
+		F.Intrinsic.File.IsFileLocked(V.Local.sFileExport,V.Local.bFileLocked)
+		F.Intrinsic.Control.If(V.Local.bFileLocked)
+			F.Intrinsic.String.Build("File is already open. Please close and export again.{0}File: {1}",V.Ambient.NewLine,V.Local.sFileExport,V.Local.sMsg)
+			F.Intrinsic.UI.Msgbox(V.Local.sMsg,"File In Use")
+		F.Intrinsic.Control.Else
+			Gui.frmEstimating.gsgcParts.Export(V.Local.sFileExport,"csv")
+		F.Intrinsic.Control.EndIf
+		F.Intrinsic.Task.ShellExec(0,"",V.Local.sFileExport,"","",1)
+	F.Intrinsic.Control.EndIf
+	
+F.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+F.Intrinsic.Control.EndTry
+Program.Sub.MenuClickExport.End
+
+Program.Sub.SetContextMenus.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare
+	
+	Gui.frmEstimating..ContextMenuCreate("ctxAll")
+	Gui.frmEstimating.gsgcParts.ContextMenuAttach("ctxAll")
+	Gui.frmEstimating..ContextMenuAddItem("ctxAll","Export",0,"Export")
+	Gui.frmEstimating..ContextMenuSetItemEventHandler("ctxAll","Export","MenuClickExport")	
+	Gui.frmEstimating..ContextMenuAddItem("ctxAll","CreatePO",0,"Create Blanket PO")
+	Gui.frmEstimating..ContextMenuSetItemEventHandler("ctxAll","CreatePO","MenuClickCreatePO")	
+	
+F.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+F.Intrinsic.Control.EndTry
+Program.Sub.SetContextMenus.End
+
+Program.Sub.CostBuild.Start
+f.Intrinsic.Control.Try
+	V.Local.sStatus.Declare
+	v.Local.ssql.Declare
+	v.Local.sParent.Declare
+	v.Local.sParentSeq.Declare
+	v.Local.sExpr.Declare
+	v.Local.sColName.Declare
+	v.Local.sType.Declare
+	V.Local.sRet.Declare
+	v.Local.sDescription.Declare
+	v.Local.sLevel.Declare
+	v.Local.sXref.Declare
+	v.Local.sInvUM.Declare
+	v.Local.sPurUM.Declare
+	v.Local.sSupplier.Declare
+	v.Local.sPL.Declare
+	v.Local.fUnitTotMatQty.Declare
+	V.Local.fUnitTotMatQty1.Declare
+	V.Local.fUnitTotMatQty2.Declare
+	v.Local.fColValue.Declare
+	v.Local.fTotCost.Declare
+	v.Local.fTotQty.Declare
+	v.Local.fTotPurQty.Declare
+	v.Local.fTotInvQty.Declare
+	v.Local.fExtnUnitQty.Declare
+	v.Local.fUnitPurCost.Declare
+	V.Local.fUnitCost.Declare
+	v.Local.fConv.Declare
+	v.Local.fActualQty.Declare
+	v.Local.fParentQty.Declare
+	V.Local.fpartqty.Declare
+	v.Local.i.Declare
+	v.Local.iMinusOne.Declare
+	v.Local.iQty.Declare
+	v.Local.iTotQty.Declare
+	v.Local.j.Declare(long)
+	v.Local.sParent.Set(v.Screen.frmEstimating!txtParent.text)
+	
+	f.Intrinsic.UI.InvokeWaitDialog("Doing BOM Cost Buildup")
+	GUI.frmEstimating.gsgcParts.Visible(FALSE)
+	
+	'Run the cost buildup calculation
+	f.Intrinsic.Control.If(v.Screen.frmEstimating!chkByPass.Value,=,0)
+		F.Global.Callwrapper.New("BOM","Manufacturing.BOM.CostBuildup")
+		F.Global.Callwrapper.SetProperty("BOM","Program","      ")
+		F.Global.Callwrapper.SetProperty("BOM","Flags","1")
+		F.Global.Callwrapper.SetProperty("BOM","Parent",v.Local.sParent)
+		F.Global.CallWrapper.Run("BOM")
+		F.Global.CallWrapper.GetProperty("BOM","Status",V.Local.sStatus)
+	f.Intrinsic.Control.EndIf
+
+	'Grab the data from the table
+	F.Intrinsic.Control.CallSub(CreateDataTablesSetProperties)
+
+	'Grab the data from the cost build up program
+	f.Intrinsic.String.Build("select * from BI_BOM_BUILDUP_E WHERE TRMNL='{0}' AND PARENT_KEY='{1}' AND RPTID='004203'",v.Caller.Terminal,v.Local.sParent,v.Local.ssql)
+	f.Data.DataTable.CreateFromSQL("dt","con",v.Local.ssql)
+	F.Data.DataTable.AddColumn("dt","Type","string")
+	F.Data.DataTable.AddColumn("dt","Parent","string")
+	F.Data.DataTable.AddColumn("dt","ParentSeq","string")
+	F.Data.DataTable.AddColumn("dt","ParentQTy","float")
+	F.Data.DataTable.AddColumn("dt","PartQTY","float")
+	F.Data.DataTable.AddColumn("dt","ActualQty","float")
+
+	'Add the unit type for ease of modeling the data
+	F.Intrinsic.Control.For(v.local.i,0,v.DataTable.dt.RowCount--,1)
+		f.Intrinsic.Math.Sub(v.Local.i,1,v.Local.iMinusOne)
+		F.Intrinsic.Control.If(V.DataTable.dt(V.Local.I).LEVEL!FIELDVALTRIM,<>,"PARENT")
+			f.Intrinsic.Control.If(v.DataTable.dt(v.Local.i).LEVEL!FIELDVALTRIM,=,"1*******")
+				v.Local.sType.Set(v.DataTable.dt(v.Local.i).PART!FIELDVALTRIM)
+			f.Intrinsic.Control.EndIf
+			f.Intrinsic.Control.If(v.Local.sLevel,<>,v.DataTable.dt(v.Local.i).LEVEL!FIELDVALTRIM)
+				v.Local.sParent.Set(v.DataTable.dt(v.Local.iMinusOne).PART!FIELDVALTRIM)
+				v.Local.sParentSeq.Set(v.DataTable.dt(v.Local.iMinusOne).SEQUENCE!FIELDVALTRIM)
+				v.Local.fParentQty.Set(v.DataTable.dt(v.Local.iMinusOne).parent_qty_1!fieldval)
+			f.Intrinsic.Control.EndIf
+			v.Local.fpartqty.Set(v.DataTable.dt(v.Local.i).PARENT_QTY_1!FIELDVAL)
+			F.Intrinsic.Math.Mult(v.Local.fParentQty,V.Local.fPartQty,V.Local.fActualQty)
+			v.Local.sLevel.Set(v.DataTable.dt(v.Local.i).LEVEL!FIELDVALTRIM)
+			f.Data.DataTable.SetValue("dt",V.Local.i,"Type",v.Local.sType)
+			F.Data.DataTable.SetValue("dt",v.Local.i,"Parent",v.Local.sParent)
+			f.Data.DataTable.SetValue("dt",v.Local.i,"ParentSeq",v.Local.sParentSeq)
+			f.Data.DataTable.SetValue("dt",v.Local.i,"ParentQty",v.Local.fParentQty)
+			f.Data.DataTable.SetValue("dt",v.Local.i,"PartQty",v.Local.fPartQTY)
+			f.Data.DataTable.SetValue("dt",v.Local.i,"ActualQty",v.Local.fActualQty)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Next(v.Local.i)
+	
+	'Data table for creation of parts
+	f.Data.DataView.Create("dt","dv",22," (source='Purch to Stock' or source='Purch to Job')","")
+	f.Data.DataView.ToDatatableDistinct("dt","dv","dtUnique","Part")
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtUnique.RowCount--,1)
+		'Select the description, units of measure, basic information from the part master and add row to the dtParts datatable
+		f.Intrinsic.String.Build("SELECT DESCRIPTION, UM_PURCHASING, UM_INVENTORY, IFNULL(FACTOR_CONVERSION,0), NAME_VENDOR, PRODUCT_LINE FROM V_INVENTORY_ALL WHERE PART='{0}'",v.DataTable.dtUnique(v.local.i).PART!FIELDVALTRIM,v.Local.ssql)
+		f.ODBC.Connection!con.executeandreturn(v.Local.ssql,v.Local.sRet)
+		f.Intrinsic.String.Split(v.Local.sRet,"*!*",v.Local.sRet)
+		v.Local.sDescription.Set(v.Local.sRet(0))
+		v.Local.sPurUM.Set(v.Local.sRet(1))
+		v.Local.sInvUM.Set(v.Local.sRet(2))
+		v.Local.fConv.Set(v.Local.sRet(3))
+		v.Local.sSupplier.Set(v.Local.sRet(4))
+		v.Local.sPL.Set(v.Local.sRet(5))
+		f.Intrinsic.String.Build("SELECT PCPART FROM GAB_5893_XREF WHERE GSSPART='{0}'",v.DataTable.dtUnique(v.local.i).PART!FIELDVALTRIM,v.Local.ssql)
+		f.ODBC.Connection!con.executeandreturn(v.Local.ssql,v.Local.sXref)
+		f.Data.DataTable.AddRow("dtParts","Material",v.DataTable.dtUnique(v.Local.i).PART!FIELDVALTRIM,"Description",v.Local.sDescription,"UnitCost",v.Local.fUnitCost,"XREF",v.Local.sXref,"InvUM",v.Local.sInvUM,"PurUM",v.Local.sPurUM,"Conv",v.Local.fconv,"Supplier",v.Local.sSupplier,"ProductLine",v.Local.sPL)
+
+		'This is the complicated part, loop through all of the column names, add up all of the quantities
+		f.Intrinsic.Control.For(v.Local.j,0,v.DataTable.dtColNames.RowCount--,1)
+			f.Intrinsic.String.build("Type='{0}' and Part='{1}'",v.DataTable.dtColNames(v.Local.j).ColName!fieldvaltrim,v.DataTable.dtUnique(v.Local.i).PART!FIELDVALTRIM,v.Local.sExpr)
+			F.Data.DataTable.Compute("DT","Sum(actualqty)",V.Local.sExpr,V.Local.fUnitTotMatQty)
+			
+			f.Intrinsic.String.Build("PART='{0}'",v.DataTable.dtColNames(v.Local.j).ColName!FIELDVALTRIM,v.Local.sExpr)
+			f.Data.Datatable.Select("dtUnitQty",v.Local.sExpr,v.Local.sRet)
+			f.Intrinsic.Control.If(v.Local.sRet.Trim,<>,"***NORETURN***")
+				V.Local.iQty.Set(v.DataTable.dtUnitQty(v.Local.sRet).PARENT_QTY_1!FIELDVAL)
+			f.Intrinsic.Control.EndIf
+
+			v.Local.fColValue.Set(v.Local.fUnitTotMatQty)
+			f.Data.DataTable.SetValue("dtParts",v.Local.i,v.DataTable.dtColNames(v.Local.j).ColName!fieldvaltrim,v.Local.fColValue)
+			f.Intrinsic.Math.Mult(v.Local.fColValue,v.Local.iQty,v.Local.fExtnUnitQty)
+			F.Intrinsic.Math.Add(V.Local.fTotInvQty,v.Local.fExtnUnitQty,v.Local.fTotInvQty)
+		f.Intrinsic.Control.Next(v.Local.j)
+
+		f.Intrinsic.Control.If(v.Screen.frmEstimating!chkUseAltCost.Value,=,1)
+			f.Intrinsic.String.Build("SELECT IFNULL(AMT_ALT_COST,0) FROM V_INVENTORY_MSTR WHERE PART='{0}'",v.DataTable.dtUnique(v.local.i).PART!FIELDVALTRIM,v.Local.ssql)
+			f.ODBC.Connection!con.executeandreturn(v.Local.ssql,v.Local.fUnitCost)
+			f.Intrinsic.Math.Mult(v.Local.fConv,v.Local.fUnitCost,v.Local.fUnitPurCost)
+			F.Data.DataTable.SetValue("dtParts",v.Local.i,"UnitCost",v.Local.fUnitPurCost)
+			'F.Intrinsic.Math.Mult(V.Local.fUnitCost,V.Local.fTotQty,V.Local.fTotCost)
+		f.Intrinsic.Control.EndIf
+		
+		'f.Intrinsic.Math.Round(v.Local.fTotInvQty,0,v.Local.fTotInvQty)
+		f.Data.Datatable.SetValue("dtParts",v.Local.i,"TotalInvQty",v.Local.fTotInvQty)
+		f.Intrinsic.Control.If(v.Local.fConv,<>,0)
+		f.Intrinsic.Control.AndIf(v.Local.fTotInvQty,<>,0)
+			f.Intrinsic.Math.Div(v.Local.fTotInvQty,v.Local.fConv,v.Local.fTotPurQty)
+			f.Intrinsic.Math.Round(v.Local.fTotPurQty,0,v.Local.fTotPurQty)
+		f.Intrinsic.Control.EndIf
+		f.Intrinsic.Math.Mult(v.Local.fTotPurQty,v.Local.fUnitPurCost,v.Local.fTotCost)
+		f.Data.Datatable.SetValue("dtParts",v.Local.i,"TotalCost",v.Local.fTotCost)
+		f.Data.Datatable.SetValue("dtParts",v.Local.i,"TotalPurQty",v.Local.fTotPurQty)
+		
+		v.Local.fTotPurQty.Set(0)
+		v.Local.fTotInvQty.Set(0)
+		v.Local.fTotCost.Set(0)
+		v.Local.fUnitPurCost.Set(0)
+		v.Local.fUnitTotMatQty.Set(0)
+		v.Local.fColValue.Set(0)
+		v.Local.fTotQty.Set(0)
+		
+	f.Intrinsic.Control.Next(v.Local.i)
+	GUI.frmEstimating.gsgcParts.Visible(True)
+	f.Intrinsic.UI.CloseWaitDialog
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+f.Intrinsic.Control.EndTry
+Program.Sub.CostBuild.End
+
+Program.Sub.CreateDataTablesSetProperties.Start
+f.Intrinsic.Control.Try
+	V.Local.sSql.Declare
+	v.Local.sParent.Declare
+	v.Local.sCaption.Declare
+	V.Local.iQty.Declare
+	v.Local.i.Declare
+	v.Local.sParent.Set(v.Screen.frmEstimating!txtParent.text)
+	
+	F.Intrinsic.Control.If(V.DataTable.dtParts.Exists)
+		F.Data.Datatable.Close("dtParts")
+	F.Intrinsic.Control.EndIf
+	f.Data.DataTable.Create("dtParts",true)
+	F.Data.DataTable.AddColumn("dtParts","Select","Boolean",FALSE)
+	f.Data.DataTable.AddColumn("dtParts","Material","String")
+	f.Data.DataTable.AddColumn("dtParts","XREF","String")
+	f.Data.DataTable.AddColumn("dtParts","InvUM","String")
+	f.Data.DataTable.AddColumn("dtParts","PurUM","String")
+	f.Data.DataTable.AddColumn("dtParts","Conv","float")
+	f.Data.DataTable.AddColumn("dtParts","Supplier","String")
+	f.Data.DataTable.AddColumn("dtParts","TotalInvQty","Float")
+	f.Data.DataTable.AddColumn("dtParts","TotalPurQty","Float")
+	f.Data.DataTable.AddColumn("dtParts","UnitCost","float")
+	f.Data.DataTable.AddColumn("dtParts","TotalCost","float")
+	f.Data.DataTable.AddColumn("dtParts","RevUnitCost","float")
+	f.Data.DataTable.AddColumn("dtParts","RevType","string")
+	f.Data.DataTable.AddColumn("dtParts","RevTotalCost","float")
+	f.Data.DataTable.AddColumn("dtParts","Difference","float")
+	f.Data.DataTable.AddColumn("dtParts","Description","string")
+	f.Data.DataTable.AddColumn("dtParts","ProductLine","string")
+	
+	f.Intrinsic.Control.If(v.DataTable.dtColNames.Exists)
+		f.Data.Datatable.Close("dtColNames")
+	f.Intrinsic.Control.EndIf
+	f.Data.DataTable.Create("dtColNames",true)
+	f.Data.DataTable.AddColumn("dtColNames","ColName","string")
+	
+	'Grab the records from the cost build up and start creating columns for them 
+	f.Intrinsic.String.Build("SELECT DISTINCT PART, sum(PARENT_QTY_1) AS parent_qty_1 FROM BI_BOM_BUILDUP_E WHERE TRMNL='{0}' AND PARENT_KEY='{1}' AND RPTID='004203' AND LEVEL='1*******' GROUP BY PART",v.Caller.Terminal,v.Local.sParent,v.Local.ssql)
+	f.Intrinsic.Control.If(v.DataTable.dtUnitQty.Exists)
+		f.Data.Datatable.Close("dtUnitQty")
+	f.Intrinsic.Control.EndIf
+	f.Data.DataTable.CreateFromSQL("dtUnitQty","con",v.Local.ssql,true)
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtUnitQty.RowCount--,1)
+		F.Data.DataTable.AddColumn("dtParts",v.DataTable.dtUnitQty(v.Local.i).Part!fieldvaltrim,"Float",0)
+		f.Data.DataTable.AddRow("dtColNames","ColName",v.DataTable.dtUnitQty(v.Local.i).Part!fieldvaltrim)
+	f.Intrinsic.Control.Next(v.Local.i)
+	
+	'Bind the datasource and add the gridview
+	gui.frmEstimating.gsgcParts.DataSource("dtParts")
+	gui.frmEstimating.gsgcParts.AddGridviewFromDatatable("gvParts","dtParts")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","Select","MinWidth","50")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","Material","MinWidth","135")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalInvQty","MinWidth","75")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalPurQty","MinWidth","75")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","Supplier","MinWidth","100")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","UnitCost","MinWidth","75")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalCost","MinWidth","95")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","InvUM","MinWidth","35")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","PurUM","MinWidth","35")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","Conv","MinWidth","70")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevUnitCost","MinWidth","75")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevType","MinWidth","75")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevTotalCost","MinWidth","75")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","Difference","MinWidth","75")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","Description","MinWidth","180")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","XREF","MinWidth","200")
+	
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalInvQty","Caption","Total Inv Qty")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","UnitCost","Caption","Unit Pur Cost")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalCost","Caption","Total Cost")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevUnitCost","Caption","Rev. Unit Cost")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevType","Caption","Rev. Type")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevTotalCost","Caption","Rev. Total Cost")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","InvUM","Caption","Inv. UM")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","PurUM","Caption","Pur. UM")
+	
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","Select","ReadOnly",False)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalInvQty","ReadOnly",true)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","UnitCost","ReadOnly",true)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalCost","ReadOnly",true)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevUnitCost","ReadOnly",true)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevType","ReadOnly",true)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevTotalCost","ReadOnly",true)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","PurUM","ReadOnly",true)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","InvUM","ReadOnly",true)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalPurQty","ReadOnly",False)
+		
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","Select","AllowEdit",True)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalInvQty","AllowEdit",false)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","UnitCost","AllowEdit",false)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalCost","AllowEdit",false)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevUnitCost","AllowEdit",false)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevType","AllowEdit",false)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevTotalCost","AllowEdit",false)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","PurUM","AllowEdit",false)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","InvUM","AllowEdit",false)
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalPurQty","AllowEdit",True)
+	
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","ProductLine","Visible",false)
+	
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevTotalCost","DisplayCustomNumeric","$#,###,###,##0.00")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","RevUnitCost","DisplayCustomNumeric","$#,###,###,##0.00")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalCost","DisplayCustomNumeric","$#,###,###,##0.00")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","UnitCost","DisplayCustomNumeric","$#,###,###,##0.00")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","TotalInvQty","DisplayCustomNumeric","#,###,###,##0.00")
+	gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts","Difference","DisplayCustomNumeric","$#,###,###,##0.00")
+	
+	'Loop through the columns adding QTY to their caption
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtUnitQty.RowCount--,1)
+		v.Local.iQty.Set(v.DataTable.dtUnitQty(v.Local.i).PARENT_QTY_1!fieldval)
+		f.Intrinsic.Math.Round(v.Local.iQty,0,v.Local.iQty)
+		f.Intrinsic.String.Concat(v.DataTable.dtUnitQty(v.Local.i).Part!fieldvaltrim," (",v.local.iQty,")",v.Local.sCaption)
+		gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts",v.DataTable.dtUnitQty(v.Local.i).Part!fieldvaltrim,"Caption",v.Local.sCaption)
+		gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts",v.DataTable.dtUnitQty(v.Local.i).Part!fieldvaltrim,"MinWidth","75")
+		gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts",v.DataTable.dtUnitQty(v.Local.i).Part!fieldvaltrim,"ReadOnly",True)
+		gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts",v.DataTable.dtUnitQty(v.Local.i).Part!fieldvaltrim,"AllowEdit",False)
+		gui.frmEstimating.gsgcParts.SetColumnProperty("gvParts",v.DataTable.dtUnitQty(v.Local.i).Part!fieldvaltrim,"DisplayCustomNumeric","#,###,###,##0.00")
+	f.Intrinsic.Control.Next(v.Local.i)
+		
+	Gui.frmEstimating.gsgcParts.AddSummaryItem("gvParts","TotalCost","SUM_TotalCost","Sum","","","n")
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmEstimating_UnLoad)
+f.Intrinsic.Control.EndTry
+Program.Sub.CreateDataTablesSetProperties.End
+
+Program.Sub.frmEstimating_UnLoad.Start
+f.ODBC.Connection!con.Close
+f.Intrinsic.Control.End
+Program.Sub.frmEstimating_UnLoad.End
+
+Program.Sub.Comments.Start
+${$5$}$3.0.0.0$}$1
+${$6$}$rfisher$}$20200414143232546$}$b10QVt26jzz6R0J+Y14BUjvWwMpAez4tHeTUHa2PkVVqaSaWTRQdhxDm2U/yfz+n9JxtDIrZ+mI=
+Program.Sub.Comments.End
