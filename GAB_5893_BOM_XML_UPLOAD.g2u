@@ -1,0 +1,591 @@
+Program.Sub.ScreenSU.Start
+Gui.frmBOMImp..Create
+Gui.frmBOMImp..Caption("BOM Importer")
+Gui.frmBOMImp..Size(4365,4545)
+Gui.frmBOMImp..MinX(0)
+Gui.frmBOMImp..MinY(0)
+Gui.frmBOMImp..Position(0,0)
+Gui.frmBOMImp..BackColor(-2147483633)
+Gui.frmBOMImp..MousePointer(0)
+Gui.frmBOMImp..Event(UnLoad,frmBOMImp_UnLoad)
+Gui.frmBOMImp.trvImport.Create(TreeView)
+Gui.frmBOMImp.trvImport.Size(4035,3870)
+Gui.frmBOMImp.trvImport.Position(45,45)
+Gui.frmBOMImp.txtName.Create(TextBox,"",False,3990,300,0,60,270,True,0,"Arial",8,-2147483643,1)
+Gui.frmBOMImp.lbl1.Create(Label,"BOM Name",False,1935,255,0,105,75,True,0,"Arial",8,-2147483633,0)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+v.global.sfileupload.Declare
+v.Global.iCounter.Declare
+v.Global.iCounter.Set(1)
+v.Global.sMasterDir.Declare
+f.Intrinsic.String.Concat(v.Caller.FilesDir,"\",v.Caller.CompanyCode,"XMLUPLOAD\",v.global.sMasterDir)
+Program.External.Include.Library("6021.lib")
+Program.External.Include.Library("1010.lib")
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.Try
+	v.Local.sret.Declare
+	v.Local.sFile.Declare
+	v.Local.sSql.Declare
+	v.Local.sFilter.Declare
+	v.Local.bExists.Declare
+	
+	f.Data.DataTable.Create("dtApp",true)
+	f.Data.DataTable.AddColumn("dtApp","Parent","string")
+	f.Data.DataTable.AddColumn("dtApp","Part","string")
+	f.Data.DataTable.AddColumn("dtApp","Description","string")
+	f.Data.DataTable.AddColumn("dtApp","UM","string")
+	f.Data.DataTable.AddColumn("dtApp","QTY","float")
+	f.Data.DataTable.AddColumn("dtApp","Source","string")
+	f.Data.DataTable.AddColumn("dtApp","Cost","float")
+	f.Data.DataTable.AddColumn("dtApp","Seq","string")
+	
+	f.Data.DataTable.Create("dtParents",true)
+	f.Data.DataTable.AddColumn("dtParents","Parent","string")
+	
+	f.ODBC.Connection!con.opencompanyconnection
+	
+	'Check if table exists
+	F.ODBC.connection!con.TableExists("GAB_5893_XREF", V.Local.bExists)
+	f.Intrinsic.Control.If(v.Local.bExists,=,False)
+		F.ODBC.Connection!con.execute("CREATE TABLE GAB_5893_XREF (GSSPART VARCHAR(50), PCPART VARCHAR(150));")
+	f.Intrinsic.Control.EndIf
+	f.ODBC.Connection!con.tableExists("GAB_5893_LOG",v.Local.bExists)
+	f.Intrinsic.Control.If(v.Local.bExists,=,False)
+		f.ODBC.Connection!con.execute("CREATE TABLE GAB_5893_LOG  (FileRenamed VARCHAR(100), DateProcessed DATETIME DEFAULT NOW(), UserProcessed VARCHAR(50), Status VARCHAR(50), FileOriginal VARCHAR(100) );")
+	f.Intrinsic.Control.EndIf
+	
+	'Process the files
+	f.Intrinsic.File.GetFileList(v.global.sMasterDir,v.Local.sret)
+	F.Intrinsic.Control.If(V.Local.sret.Trim,<>,"")
+		f.Intrinsic.Control.CallSub(openFiles,"Files",v.Local.sret)
+	F.Intrinsic.Control.EndIf
+	
+	f.ODBC.Connection!con.Close
+	f.Intrinsic.Control.End
+F.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	F.Intrinsic.Control.CallSub(frmBOMIMP_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.openFiles.Start
+f.Intrinsic.Control.Try
+	v.Local.sFiles.Declare 
+	v.Local.i.Declare 
+	v.Static.bBusy.Declare
+	v.Local.bFileLocked.Declare
+	v.Local.sfilename.Declare
+	V.Local.sfilename.Set("BOMHDR.TXT")
+	v.Local.sfiledir.Declare
+	v.Local.sParent.Declare
+	v.Local.ssql.Declare
+	v.Local.lRet.Declare
+	v.Local.iCount.Declare
+	V.Local.sseq.Declare
+	V.Local.sPart.Declare
+	v.Local.srouter.Declare
+	V.Local.sParams.Declare
+	v.Local.sPartLeft3.Declare
+	
+	gui.frmBOMImp.trvImport.Enabled(false)
+	f.Intrinsic.UI.InvokeWaitDialog("Uploading Files.")
+	f.Intrinsic.Control.If(V.Static.bBusy,=,True)
+		f.Intrinsic.Control.ExitSub
+	f.Intrinsic.Control.EndIf
+	
+	v.Static.bBusy.set(True)
+	
+	f.Intrinsic.String.Split(v.Args.Files,":",v.Local.sFiles)
+	
+	f.Intrinsic.String.LPad(v.LOCAL.icount,"0",3,v.Local.sseq)
+	f.Intrinsic.String.Concat(v.Local.sseq,"0",v.Local.sseq)
+	
+	'Read through all the files
+	f.Intrinsic.Control.For(v.Local.i,0,v.Local.sFiles.UBound,1)
+		
+		'Process XML
+		f.Intrinsic.Control.CallSub(ProcessXML,"File",v.Local.sFiles(v.Local.i),"Counter",v.Local.i)
+		v.Local.sPart.Set(v.Local.sFiles(v.Local.i))
+		f.Intrinsic.String.Replace(v.Local.sPart,".xml","",v.Local.sPart)
+		F.Global.Inventory.AddPartToBatch(v.Local.sPart.UCase,"EA",v.Local.sPart.UCase,"","FG","F","","","","NOMAINT")
+		
+		'Get the name
+		f.Intrinsic.String.InstrRev(v.Local.sFiles(v.Local.i),"\",v.local.lRet)
+		f.Intrinsic.Math.Add(v.Local.lRet,1,v.Local.lRet)
+		f.Intrinsic.String.Mid(v.Local.sFiles(v.Local.i),v.Local.lRet,v.Local.sParent)
+		f.Intrinsic.String.Replace(v.Local.sParent,".xml","",v.Local.sParent)
+		f.Intrinsic.String.UCase(v.Local.sParent,v.Local.sParent)
+		f.Intrinsic.Math.Add(v.Local.iCount,1,v.Local.iCount)
+		f.Intrinsic.String.LPad(v.LOCAL.icount,"0",3,v.Local.sseq)
+		f.Intrinsic.String.Concat(v.Local.sseq,"0",v.Local.sseq)
+		
+		'Make the parent the file name
+		f.Data.DataTable.AddRow("dtApp","Parent",v.Local.sParent,"Part","","Description","","UM","EA","QTY",1,"Source","F","Cost",0,"Seq","0000")
+		f.Data.DataTable.AddRow("dtParents","Parent",v.Local.sParent)
+		
+		'Grab the templated
+		f.Intrinsic.Control.CallSub(findRtr,"Parent",v.Local.sParent)
+		f.Intrinsic.Variable.ArgToVar("rRouter",v.Local.sRouter)
+		
+		f.Intrinsic.Control.CallSub(formatRTR,"Router",v.Local.srouter,"Parent",v.Local.sParent)
+		
+		'Delete from table
+		f.Intrinsic.String.Build("Delete from BOM_Eng where part IN ('{0}')",v.Local.sParent,V.Local.ssql)
+		f.ODBC.Connection!con.Execute(V.Local.ssql)
+		f.Intrinsic.String.Build("Delete from bom_mstr where parent IN ('{0}')",v.Local.sParent,V.Local.ssql)
+		F.ODBC.Connection!con.execute(V.Local.ssql)
+		
+		f.Intrinsic.Control.CallSub(MoveFile,"FileName",v.Local.sFiles(v.Local.i))
+		
+	f.Intrinsic.Control.Next(v.Local.i)
+	
+	'Format BOM file
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtApp.RowCount--,1)
+		f.Intrinsic.String.Left(V.DataTable.dtApp(V.Local.I).Part!fieldvaltrim,3,v.Local.sPartLeft3)
+		F.Intrinsic.Control.If(v.Local.sPartLeft3,=,"SET")
+			'If a set, make category phantom
+			f.Intrinsic.Control.CallSub(uploadBOM,"Part",v.DataTable.dtApp(v.Local.i).Part!fieldvaltrim,"Rev","","Qty",v.DataTable.dtApp(v.Local.i).Qty!fieldvaltrim,"UM",v.DataTable.dtApp(v.Local.i).UM!fieldvaltrim,"Desc",v.DataTable.dtApp(v.Local.i).Description!fieldvaltrim,"Vendor","","Category","Phantom","Source",v.DataTable.dtApp(v.Local.i).Source!fieldvaltrim,"Parent",v.DataTable.dtApp(v.Local.i).Parent!fieldvaltrim,"iCount",v.Local.iCount,"Seq",v.DataTable.dtApp(v.Local.i).Seq!fieldvaltrim)
+		F.Intrinsic.Control.Else
+			f.Intrinsic.Control.If(v.Local.sPartLeft3,=,"PNT")
+				'If paint, set to manufacture to job
+				f.Intrinsic.Control.CallSub(uploadBOM,"Part",v.DataTable.dtApp(v.Local.i).Part!fieldvaltrim,"Rev","","Qty",v.DataTable.dtApp(v.Local.i).Qty!fieldvaltrim,"UM",v.DataTable.dtApp(v.Local.i).UM!fieldvaltrim,"Desc",v.DataTable.dtApp(v.Local.i).Description!fieldvaltrim,"Vendor","","Category","","Source","F","Parent",v.DataTable.dtApp(v.Local.i).Parent!fieldvaltrim,"iCount",v.Local.iCount,"Seq",v.DataTable.dtApp(v.Local.i).Seq!fieldvaltrim)	
+			f.Intrinsic.Control.Else
+				'Treat like normal
+				f.Intrinsic.Control.CallSub(uploadBOM,"Part",v.DataTable.dtApp(v.Local.i).Part!fieldvaltrim,"Rev","","Qty",v.DataTable.dtApp(v.Local.i).Qty!fieldvaltrim,"UM",v.DataTable.dtApp(v.Local.i).UM!fieldvaltrim,"Desc",v.DataTable.dtApp(v.Local.i).Description!fieldvaltrim,"Vendor","","Category","","Source",v.DataTable.dtApp(v.Local.i).Source!fieldvaltrim,"Parent",v.DataTable.dtApp(v.Local.i).Parent!fieldvaltrim,"iCount",v.Local.iCount,"Seq",v.DataTable.dtApp(v.Local.i).Seq!fieldvaltrim)	
+			f.Intrinsic.Control.EndIf
+			
+		F.Intrinsic.Control.EndIf
+		
+	f.Intrinsic.Control.Next(v.Local.i)
+	
+	'Bring string into File
+	F.Intrinsic.String.Concat(V.Caller.FilesDir,"\",V.Local.sfilename,V.local.sfiledir)
+	f.Intrinsic.File.IsFileLocked(v.Local.sfiledir,v.Local.bFileLocked)
+	f.Intrinsic.Control.If(v.Local.bFileLocked,<>,True)
+		f.Intrinsic.File.GetHandle(v.local.lRet)
+		f.Intrinsic.File.OpenForWrite(V.local.sfiledir,v.local.lRet)
+		f.Intrinsic.File.WriteLine(v.Local.lRet,v.global.sfileupload)
+		f.Intrinsic.File.CloseFile(v.Local.lRet)
+	f.Intrinsic.Control.Else
+		F.Intrinsic.UI.Msgbox("Catastrophic Error. BOM file locked. Program & upload will need to be reran, program now exiting.")
+		f.Intrinsic.Control.CallSub(frmBOMImp_UnLoad)
+	f.Intrinsic.Control.EndIf
+	
+	'Post the part batch
+	f.Global.Inventory.PostPartBatch
+	
+	'Upload BOM
+	F.Global.General.CallWrapperSync(6010,"NS!*!50")
+	
+	'Upload Router 
+	f.Intrinsic.Control.CallSub(6021Sync)
+	
+	'Run the rebuild BOM index
+	f.Data.DataView.Create("dtParents","dvParents",22,"","PARENT ASC")
+	f.Data.DataTable.AddRow("1010","Process","02","BegBOMParent",v.DataView.dtParents!dvParents(0).PARENT!FIELDVALTRIM,"EndBOMParent",v.DataView.dtParents!dvParents(v.DataView.dtParents!dvParents.RowCount--).PARENT!FIELDVALTRIM)
+	f.Intrinsic.Control.CallSub(1010Sync)
+	
+	'Rebuild routers / Fix BMATL
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtParents.RowCount--,1)
+		f.Intrinsic.String.ConcatCallWrapperArgs(V.DataTable.dtParents(v.Local.i).PARENT!FIELDVALTRIM,V.DataTable.dtParents(v.Local.i).PARENT!FIELDVALTRIM,v.Local.sParams)
+		F.Global.General.CallWrapperSync(1001,v.Local.sParams)
+	f.Intrinsic.Control.Next(v.Local.i)
+	
+	f.Intrinsic.UI.Sleep(1)
+	f.Intrinsic.Control.CallSub(frmBOMImp_Unload)
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmBOMImp_UnLoad)
+f.Intrinsic.Control.EndTry
+Program.Sub.openFiles.End
+
+Program.Sub.formatRtr.Start
+f.Intrinsic.Control.Try
+	v.Local.sMyRouter.Declare
+	V.Local.sParent.Declare
+	v.Local.ssql.Declare
+	v.Local.sRtrNm.Declare
+	v.Local.sRtrDs.Declare
+	v.Local.sRtrSq.Declare
+	v.Local.sLMOTp.Declare
+	v.Local.sPartN.Declare
+	v.Local.sWorkC.Declare
+	v.Local.sSDesc.Declare
+	v.Local.fSetQt.Declare
+	v.Local.fRunQt.Declare
+	v.Local.sCustN.Declare
+	v.Local.fRateF.Declare
+	v.Local.sStpUM.Declare
+	v.Local.sProdL.Declare
+	v.Local.sOmitL.Declare
+	V.Local.sSortC.Declare
+	v.Local.sSeqFr.Declare
+	v.Local.iLeadT.Declare
+	v.Local.iPlusO.Declare
+	v.Local.lReslt.Declare
+	v.Local.lMulti.Declare
+	v.Local.i.Declare
+	
+	v.Local.sRtrNm.Set(v.Args.Parent)
+	v.Local.sMyRouter.Set(v.Args.Router)
+	'Operation multiplier
+	f.Global.General.ReadOption("401113",3,False,"0000",v.Local.lMulti)
+	
+	'Delete Router
+	F.Intrinsic.String.Concat("DELETE FROM ROUTER_HEADER WHERE ROUTER='",V.local.sRtrNm,"'",V.Local.ssql)
+	F.ODBC.connection!CON.Execute(V.Local.ssql)
+	F.Intrinsic.String.Concat("DELETE FROM ROUTER_SUPP_HDR WHERE RTR_NUM='",V.local.sRtrNm,"'",V.Local.ssql)
+	F.ODBC.connection!CON.Execute(V.Local.ssql)
+	F.Intrinsic.String.Concat("DELETE FROM ROUTER_SUPP_LINE WHERE RTR_NUM='",V.local.sRtrNm,"'",V.Local.ssql)
+	F.ODBC.connection!CON.Execute(V.Local.ssql)
+	F.Intrinsic.String.Concat("DELETE FROM ROUTER_XREF WHERE ROUTER='",V.local.sRtrNm,"'",V.Local.ssql)
+	F.ODBC.connection!CON.Execute(V.Local.ssql)
+		
+	f.Intrinsic.String.Build("select * from ROUTER_LINE WHERE LINE_ROUTER>'000000' AND ROUTER='{0}' order by LINE_ROUTER",V.Local.sMyRouter,v.Local.ssql)
+	f.Intrinsic.Control.If(v.DataTable.dtRtr.Exists)
+		f.Data.DataTable.Close("dtRtr")
+	f.Intrinsic.Control.EndIf
+	f.Data.DataTable.CreateFromSQL("dtRtr","con",v.Local.ssql,true)
+	
+	f.Intrinsic.Control.For(v.Local.i,0,v.DataTable.dtRtr.RowCount--,1)
+		'Set Customer, RAte, Step UM, and Product Line.
+		v.Local.fRateF.Set(v.DataTable.dtRtr(v.Local.i).RATE!FIELDVALTRIM)
+		v.Local.sStpUM.Set(v.DataTable.dtRtr(v.Local.i).UM_INVENTORY!FIELDVALTRIM)
+		v.Local.sProdL.Set("FG")
+		v.Local.fSetQt.Set(v.DataTable.dtRtr(v.Local.i).SET_UP!FIELDVAL)
+		v.Local.fRunQt.Set(v.DataTable.dtRtr(v.Local.i).RUN_TIME!FIELDVAL)
+		v.Local.sRtrDs.Set(V.Args.Router)
+		v.Local.sSDesc.Set(v.DataTable.dtRtr(v.Local.i).DESC_RT_LINE!FIELDVALTRIM)
+		v.Local.sLMOTp.Set(v.DataTable.dtRtr(v.Local.i).LMO!FIELDVALTRIM)
+		v.Local.sWorkC.Set(v.DataTable.dtRtr(v.Local.i).PART_WC_OUTSIDE!FIELDVALTRIM)
+		
+		'Router Sequence	
+		f.Intrinsic.Math.Add(v.Local.i,1,v.Local.iPlusO)
+		f.Intrinsic.Math.Mult(v.Local.iPlusO,v.Local.lMulti,v.local.lReslt)
+		f.Intrinsic.String.LPad(v.Local.lReslt,"0",6,v.Local.sSeqFr)
+		v.Local.sRtrSq.Set(v.Local.sSeqFr)
+		
+		f.Data.DataTable.AddRow("6021","RouterNum",v.Local.sRtrNm,"SortCode",v.Local.sSortC,"RouterDesc",v.Local.sRtrDs,"Seq",v.Local.sRtrSq,"LineType",v.Local.sLMOTp,"PartNum",v.Local.sPartN,"WC",v.Local.sWorkC,"PartStepDesc",v.Local.sSDesc,"SetupQty",v.Local.fSetQt,"RunTimeMatlQty",v.Local.fRunQt,"RateUC",v.local.fRateF,"UM",v.Local.sStpUM,"PL",v.Local.sProdL,"OmitFromRouterRepricingFlag",v.Local.sOmitL,"LeadTime",v.Local.iLeadT)
+	f.Intrinsic.Control.Next(v.Local.i)
+		
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmBOMImp_UnLoad)
+
+F.Intrinsic.Control.EndTry
+Program.Sub.formatRtr.End
+
+Program.Sub.findRtr.Start
+f.Intrinsic.Control.Try
+	v.Local.sMyPart.Declare
+	v.Local.sRtrTemplate.Declare
+	v.Local.sMyPart.Set(v.Args.Parent)
+	
+	f.Intrinsic.String.Left(v.Local.sMyPart,3,v.Local.sMyPart)
+	
+	f.Intrinsic.Control.SelectCase(V.Local.sMyPart)
+		f.Intrinsic.Control.Case("BAT")
+			v.Local.sRtrTemplate.Set("*TEMPLATE BATHROOM")
+			
+		f.Intrinsic.Control.Case("BED")
+			'Missing
+			v.Local.sRtrTemplate.Set("*TEMPLATE BEDROOM")
+		
+		f.Intrinsic.Control.Case("BUT")
+			v.Local.sRtrTemplate.Set("*TEMPLATE BUTLER")
+		
+		f.Intrinsic.Control.Case("CLO")
+			'Missing
+			v.Local.sRtrTemplate.Set("*TEMPLATE CLOAK")
+		
+		f.Intrinsic.Control.Case("KIT")
+			v.Local.sRtrTemplate.Set("*TEMPLATE KITCHEN")	
+			
+		f.Intrinsic.Control.Case("LAU")
+			v.Local.sRtrTemplate.Set("*TEMPLATE LAUNDRY")	
+		
+		f.Intrinsic.Control.Case("LIN")
+			v.Local.sRtrTemplate.Set("*TEMPLATE LINEN")	
+		
+		f.Intrinsic.Control.Case("NBN")
+			v.Local.sRtrTemplate.Set("*TEMPLATE NBN")	
+		
+		f.Intrinsic.Control.Case("PAN")
+			'Missing
+			v.Local.sRtrTemplate.Set("*TEMPLATE PANTRY")	
+		
+		f.Intrinsic.Control.Case("STO")
+			v.Local.sRtrTemplate.Set("*TEMPLATE STORE")	
+			
+	f.Intrinsic.Control.EndSelect
+		
+	F.Intrinsic.Variable.AddRV("rRouter",v.Local.sRtrTemplate)
+	
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmBOMImp_UnLoad)
+
+f.Intrinsic.Control.EndTry
+Program.Sub.findRtr.End
+
+Program.Sub.MoveFile.Start
+f.Intrinsic.Control.Try
+	'Helper Variables
+	V.Local.sPath.Declare
+	v.Local.sFile.Declare
+	v.Local.sFileN.Declare
+	v.Local.sDirP.Declare
+	v.Local.bDirE.Declare
+	v.Local.sDateTime.Declare
+	v.Local.ssql.Declare
+	
+	'Create Directory if it does not exist
+	f.Intrinsic.String.Concat(v.Caller.FilesDir,"\",v.Caller.CompanyCode,"XMLUPLOAD\",V.Local.sPath)
+	f.Intrinsic.String.Concat(v.Caller.FilesDir,"\",v.Caller.CompanyCode,"XMLUPLOAD\Processed\",V.Local.sDirP)
+	f.Intrinsic.File.DirExists(v.Local.sDirP,v.Local.bDirE)
+	f.Intrinsic.Control.If(v.Local.bDirE,=,false)
+		f.Intrinsic.File.CreateDir(v.Local.sDirP)
+	f.Intrinsic.Control.EndIf
+	
+	'Set the filename
+	v.Local.sFile.Set(v.Args.FileName)
+	f.Intrinsic.String.Format(v.Ambient.Now,"YYYYMMDD HHNNSS",v.Local.sDateTime)
+	F.Intrinsic.String.Concat(V.Local.sDateTime,V.Local.sFile,v.Local.sFileN)
+	
+	'Copy the file
+	f.Intrinsic.String.Concat(v.Local.sPath,v.Local.sFile,v.Local.sFile)
+	f.Intrinsic.String.Concat(v.Local.sDirP,v.Local.sFileN,v.Local.sFileN)
+	f.Intrinsic.File.CopyFile(v.Local.sFile,v.Local.sFileN)
+	
+	'Delete the file
+	f.Intrinsic.File.DeleteFile(v.Local.sFile)
+	
+	'Insert Record into DB
+	f.Intrinsic.String.Build("INSERT INTO GAB_5893_LOG (FileRenamed, UserProcessed, Status, FileOriginal) VALUES ('{0}','{1}','{2}','{3}')",v.local.sFileN,v.Caller.User,"Completed",v.Args.FileName,v.Local.ssql)
+	f.ODBC.Connection!con.execute(v.Local.ssql)
+	
+f.Intrinsic.Control.Catch
+	f.Intrinsic.String.Build("INSERT INTO GAB_5893_LOG (FileRenamed, UserProcessed, Status, FileOriginal) VALUES ('{0}','{1}','{2}','{3}')",v.local.sFileN,v.caller.User,"Failed",v.Args.FileName,v.Local.ssql)
+	f.ODBC.Connection!con.execute(v.Local.ssql)
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.ODBC.Connection!con.Close
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.EndTry
+Program.Sub.MoveFile.End
+
+Program.Sub.processXML.Start
+f.Intrinsic.Control.Try
+	v.Local.sDoc.Declare
+	v.Local.sDocID.Declare
+	v.Local.sDesc.Declare
+	v.Local.sFile.Declare
+	v.Local.sParent.Declare
+	v.local.sRet.Declare
+	v.Local.sNetm2.Declare
+	v.Local.sPart.Declare
+	v.Local.sType.Declare
+	v.Local.sQTY.Declare
+	v.Local.sSource.Declare
+	v.Local.sUM.Declare
+	v.Local.lRet.Declare
+	v.Local.bEOF.Declare
+	v.Local.fCost.Declare
+	v.Local.fQTY.Declare
+	v.Local.sSeq.Declare
+	v.Local.ssql.Declare
+	v.Local.sGSSPart.Declare
+	v.Local.iCounter.Declare
+	v.Local.iCounter.Set(1)
+	f.Intrinsic.String.Concat(v.Global.sMasterDir,"\",v.Args.File,v.Local.sFile)
+	
+	F.Intrinsic.String.Build("Doc{0}",v.Args.Counter,V.Local.sDoc)
+	F.Global.XML.LoadDocument(V.local.sdoc,V.local.sFile,False,False,False,False)
+	f.Intrinsic.String.InstrRev(v.Local.sFile,"\",v.local.lRet)
+	f.Intrinsic.Math.Add(v.Local.lRet,1,v.Local.lRet)
+	f.Intrinsic.String.Mid(v.Local.sFile,v.Local.lRet,v.Local.sParent)
+	f.Intrinsic.String.Replace(v.Local.sParent,".xml","",v.Local.sParent)
+	f.Intrinsic.String.UCase(v.Local.sParent,v.Local.sParent)
+	f.global.XML.Query(v.local.sdoc,"set1","//*")
+	
+	'loop through node set
+	F.Intrinsic.Control.dountil(V.local.bEOF,=,True)
+		'Get the node name
+		f.global.xml.ReadNodeSetValue(v.local.sdoc,"set1","nodeName",V.local.sret)
+		f.Intrinsic.Control.If(v.Local.sret.Trim,=,"Material")
+			v.Local.sType.Set("Material")
+		f.Intrinsic.Control.ElseIf(v.Local.sRet.Trim,=,"Edge")
+			v.Local.sType.Set("Edge")
+		f.Intrinsic.Control.ElseIf(v.Local.sRet.Trim,=,"Hardware")
+			v.Local.sType.Set("Hardware")
+		f.Intrinsic.Control.EndIf
+		
+		'Part Name
+		F.Intrinsic.Control.If(V.Local.sRet.Trim,=,"Name")
+			'Look part up in XREF Table
+			f.global.xml.ReadNodeSetValue(v.local.sdoc,"set1","text",V.local.sPart)
+			f.Intrinsic.String.Split(v.Local.sPart,"*!*",v.Local.sPart)
+			F.Intrinsic.String.LTrim(V.Local.sPart,V.Local.sPart)
+			f.Intrinsic.String.Build("SELECT GSSPART FROM GAB_5893_XREF WHERE PCPART='{0}'",v.Local.sPart.RTrim,v.Local.ssql)
+			f.ODBC.Connection!con.executeandreturn(v.Local.ssql,v.Local.sGSSPart)
+			f.Intrinsic.Control.If(v.Local.sGSSPart.Trim,=,"")
+				v.Local.sPart.Set("NOPARTFOUND")
+			f.Intrinsic.Control.Else
+				v.Local.sPart.Set(v.Local.sGSSPart)
+			f.Intrinsic.Control.EndIf
+			
+		f.Intrinsic.Control.ElseIf(v.Local.sRet.Trim,=,"LenRound")
+			f.global.xml.ReadNodeSetValue(v.local.sdoc,"set1","text",V.local.fQTY)
+			v.Local.sUM.Set("MM")
+			f.Intrinsic.Control.If(v.Local.sType.Trim,=,"Edge")
+				v.Local.sUM.Set("M")
+				f.Intrinsic.Control.If(v.Local.fQTY,<>,0)
+					f.Intrinsic.Math.Div(v.Local.fQTY,1000,v.Local.fQTY)	
+				f.Intrinsic.Control.EndIf
+			f.Intrinsic.Control.EndIf
+			V.Local.sSource.Set("P")
+			
+		f.Intrinsic.Control.ElseIf(v.Local.sRet.Trim,=,"Gross_m2")
+			f.global.xml.ReadNodeSetValue(v.local.sdoc,"set1","text",V.local.fQTY)
+			v.Local.sUM.Set("M2")
+			V.Local.sSource.Set("P")
+			
+		f.Intrinsic.Control.ElseIf(v.Local.sRet.Trim,=,"QtyRound")
+			f.global.xml.ReadNodeSetValue(v.local.sdoc,"set1","text",V.local.fQTY)
+			v.Local.sUM.Set("EA")
+			V.Local.sSource.Set("P")
+			
+		f.Intrinsic.Control.ElseIf(v.Local.sRet.Trim,=,"NetCost")
+			f.global.xml.ReadNodeSetValue(v.local.sdoc,"set1","text",V.local.fCost)
+			
+		f.Intrinsic.Control.ElseIf(v.Local.sRet.Trim,=,"GrossPrice")
+			f.Intrinsic.String.LPad(v.local.iCounter,"0",3,v.Local.sseq)
+			f.Intrinsic.String.Concat(v.Local.sseq,"0",v.Local.sseq)
+			f.Data.DataTable.AddRow("dtApp","Parent",v.Local.sParent,"Part",v.Local.sPart(0),"Description",v.Local.sDesc,"UM",v.Local.sUM,"QTY",v.Local.fQTY,"Source",v.Local.sSource,"Cost",v.Local.fCost,"Seq",v.local.sSeq)
+			f.Intrinsic.Math.Add(v.local.iCounter,1,v.local.iCounter)
+			v.Local.sType.Set("")
+			v.Local.sPart.Set("")
+			v.Local.sDesc.Set("")
+			v.Local.sUM.Set("")
+			v.Local.fQTY.Set(0)
+			v.Local.fCost.Set(0)
+			v.Local.sSource.Set("")
+		F.Intrinsic.Control.EndIf
+	f.global.xml.next(v.local.sdoc,"set1",V.local.bEOF)
+	F.Intrinsic.Control.loop
+	
+	'close node set
+	f.global.xml.closeSet(v.local.sdoc,"set1")
+	F.global.xml.CloseDocument(v.local.sdoc)
+	
+f.Intrinsic.Control.Catch
+	f.Intrinsic.UI.Msgbox(v.Ambient.ErrorDescription)
+	f.Intrinsic.Control.CallSub(frmBOMImp_UnLoad)
+f.Intrinsic.Control.EndTry
+Program.Sub.processXML.End
+
+Program.Sub.uploadBOM.Start
+v.Local.sError.Declare(String)
+V.Local.sLine.Declare(String)
+V.Local.sParent.Declare(String)
+V.Local.sPart.Declare(String)
+V.Local.sSeq.Declare(String)
+V.Local.sDescription.Declare(String)
+V.Local.sCount.Declare(String)
+V.Local.sUM.Declare(String)
+V.Local.sCategory.Declare(String)
+V.Local.sSource.Declare(String)
+V.Local.sMisc.Declare(String)
+V.Local.iFor.Declare(Long)
+V.Local.i7.Declare(Long)
+V.Local.sRev.Declare(String)
+V.Local.schild.Declare(String)
+V.Local.sqty.Declare(String)
+V.Local.spno.Declare(String)
+V.Local.suom.Declare(String)
+V.Local.sDesc.Declare(String)
+V.Local.spad.Declare(String)
+V.Local.spad1.Declare(String)
+V.Local.spad2.Declare(String)
+V.Local.spad3.Declare(String)
+V.Local.sRMLine.Declare(String)
+V.Local.sRMParent.Declare(String)
+v.Local.ssql.Declare(String)
+V.Local.sVendcode.Declare(String)
+v.Local.sPL.Declare(string)
+V.Local.sTempCategory.Declare(String)
+
+F.Intrinsic.String.RPad(v.Args.Part," ",20,V.Local.sPart)
+F.Intrinsic.String.Left(V.Local.sPart,20,V.Local.sPart)
+
+'F.Intrinsic.String.RPad(v.Args.Rev," ",3,V.Local.sRev)
+'F.Intrinsic.String.Left(V.Local.sRev,3,V.Local.sRev)
+
+'Parent
+F.Intrinsic.String.RPad(V.Args.Parent," ",20,V.Local.sParent)
+F.Intrinsic.String.Concat(v.global.sfileupload,v.Local.sParent,v.global.sfileupload)
+
+'Sequences
+f.Intrinsic.String.LPad(v.args.Seq,"0",4,v.Local.sLine)
+F.Intrinsic.String.Concat(v.global.sfileupload,v.Local.sLine,v.global.sfileupload)
+
+'Quantity
+Function.Intrinsic.String.Format(v.Args.QTY,"####.0000", variable.local.sqty)
+F.Intrinsic.String.LPad(variable.local.sqty,"0",16,V.Local.sqty)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sqty,v.global.sfileupload)
+
+'Part & Rev put together
+F.Intrinsic.String.GSSPartString(V.Local.sPart,V.Local.sRev,V.Local.sPart)
+f.Intrinsic.String.RPad(v.Local.sPart," ",20,v.Local.sPart)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sPart,v.global.sfileupload)
+
+'UM
+F.Intrinsic.String.RPad(v.Args.UM," ",2,V.Local.sUM)
+F.Intrinsic.String.Left(V.Local.sUM,2,V.Local.sUM)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sUM,v.global.sfileupload)
+
+'Descriptions
+F.Intrinsic.String.RPad(V.Args.DESC," ",30,V.Local.sdesc)
+'F.Intrinsic.String.RPad(" "," ",30,V.Local.sdesc)
+F.Intrinsic.String.Left(V.Local.sdesc,30,V.Local.sdesc)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.sdesc,v.global.sfileupload)
+
+'Free Pad
+F.Intrinsic.String.RPad(V.Local.spad1," ",113,V.Local.spad1)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad1,v.global.sfileupload)
+
+''Vendor Code
+'F.Intrinsic.String.RPad(v.Args.Vendor," ",6,V.Local.sVendcode)
+'F.Intrinsic.String.Left(V.Local.sVendcode,6,V.Local.sVendcode)
+'F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.svendcode,v.global.sfileupload)
+
+'Free Pad
+'F.Intrinsic.String.RPad(V.Local.spad2," ",48,V.Local.spad2)
+'F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad2,v.global.sfileupload)
+
+'Category
+F.Intrinsic.Control.If(V.Args.Category.Trim,=,"Phantom")
+	F.Intrinsic.String.Concat(v.global.sfileupload,"P",v.global.sfileupload)
+f.Intrinsic.Control.Else
+	F.Intrinsic.String.Concat(v.global.sfileupload," ",v.global.sfileupload)
+F.Intrinsic.Control.EndIf
+
+'Source
+F.Intrinsic.String.Concat(v.global.sfileupload,V.args.Source,v.global.sfileupload)
+
+'Free Pad
+F.Intrinsic.String.RPad(V.Local.spad3," ",90,V.Local.spad3)
+F.Intrinsic.String.Concat(v.global.sfileupload,V.Local.spad3,v.global.sfileupload)
+
+f.Intrinsic.String.Concat(v.Global.sfileupload,v.Ambient.NewLine,v.Global.sfileupload)
+
+
+Program.Sub.uploadBOM.End
+
+Program.Sub.frmBOMImp_UnLoad.Start
+f.ODBC.Connection!con.Close
+f.Intrinsic.Control.End
+Program.Sub.frmBOMImp_UnLoad.End
